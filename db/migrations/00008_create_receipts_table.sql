@@ -1,0 +1,13 @@
+-- +goose Up
+CREATE TABLE filecoin.receipts (
+    height BIGINT NOT NULL,
+    block_cid TEXT NOT NULL,
+    message_cid TEXT NOT NULL,
+    idx BIGINT NOT NULL,
+    exit_code BIGINT NOT NULL,
+    gas_used BIGINT NOT NULL,
+    PRIMARY KEY (height, block_cid, message_cid)
+);
+
+-- +goose Down
+DROP TABLE filecoin.receipts;
