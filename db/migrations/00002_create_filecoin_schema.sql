@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE SCHEMA filecoin;
+CREATE SCHEMA IF NOT EXISTS filecoin;
 
 -- +goose Down
 DROP SCHEMA filecoin;
