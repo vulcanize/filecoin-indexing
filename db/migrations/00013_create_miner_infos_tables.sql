@@ -17,10 +17,11 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_infos (
 
 CREATE TABLE IF NOT EXISTS filecoin.miner_sector_deals (
     height    BIGINT NOT NULL,
+    block_cid TEXT NOT NULL,
     miner_id  TEXT NOT NULL,
     sector_id BIGINT NOT NULL,
     deal_id   BIGINT NOT NULL,
-    PRIMARY KEY (height, miner_id, sector_id, deal_id)
+    PRIMARY KEY (height, block_cid, miner_id, sector_id, deal_id)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.miner_sector_infos (
