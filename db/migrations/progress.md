@@ -1,4 +1,5 @@
 ## Start with the core data structures and info
+- [x] CIDs Table
 - [x] IPLD Blockstore
 - [x] Tipset
 - [x] Headers
