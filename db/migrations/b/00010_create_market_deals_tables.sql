@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.market_deal_proposals (
     height                  BIGINT NOT NULL,
-    block_cid               TEXT NOT NULL, -- do we need to use parent_state_root instead? Since we are processing finalized proposals and not pending ones, we should have the block_cid (and block_cid will map to a parent_state_root in filecoin.block_headers)
+    block_cid               TEXT NOT NULL, -- do we need to use parent_state_root instead? Since we are processing finalized proposals and not pending ones, we should have the block_cid (and block_cid will map to b parent_state_root in filecoin.block_headers)
     deal_id                 BIGINT NOT NULL,
     piece_cid               TEXT NOT NULL,
     padded_piece_size       BIGINT NOT NULL,

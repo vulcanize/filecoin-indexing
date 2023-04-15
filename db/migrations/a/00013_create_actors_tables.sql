@@ -1,12 +1,13 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.actors (
-    height    BIGINT NOT NULL,
-    block_cid BIGINT NOT NULL,
-    id        TEXT NOT NULL,
-    code      TEXT NOT NULL,
-    head_cid  BIGINT NOT NULL,
-    nonce     BIGINT NOT NULL,
-    balance   TEXT NOT NULL,
+    height          BIGINT NOT NULL,
+    block_cid       BIGINT NOT NULL,
+    id              TEXT NOT NULL,
+    code            TEXT NOT NULL,
+    head_cid        BIGINT NOT NULL,
+    nonce           BIGINT NOT NULL,
+    balance         TEXT NOT NULL,
+    selector_suffix INT[] NOT NULL,
     PRIMARY KEY (height, block_cid, id)
 );
 
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_states (
    height    BIGINT NOT NULL,
    block_cid BIGINT NOT NULL,
    id        TEXT NOT NULL,
-   state     JSONB NOT NULL, -- TODO: figure out if there is a good reason why this isn't simply internalized into filecoin.actors in lily, also look into a more rich representation of the individual actor state (for each different type of actor)
+   state     JSONB NOT NULL,
    PRIMARY KEY (height, block_cid, id)
 );
 
