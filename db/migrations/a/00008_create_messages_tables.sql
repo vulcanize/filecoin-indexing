@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS filecoin.vm_messages (
     height      BIGINT NOT NULL,
     message_cid BIGINT NOT NULL,
     block_cid   BIGINT NOT NULL,
-    source      TEXT,
+    source      TEXT NOT NULL,
     actor_code  TEXT NOT NULL,
     params      JSONB,
     returns     JSONB,
