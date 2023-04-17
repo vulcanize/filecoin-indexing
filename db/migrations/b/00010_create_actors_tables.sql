@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
     PRIMARY KEY (height, block_cid, id)
 );
 
+-- NOTE: catchall for any actor state not represented with its own rich tables(s)
 CREATE TABLE IF NOT EXISTS filecoin.actor_states (
    height    BIGINT NOT NULL,
    block_cid TEXT NOT NULL,
