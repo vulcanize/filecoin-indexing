@@ -18,16 +18,16 @@
 Some of these are not in lily, others are (e.g. power_actor_claims, multisig tables, id_addresses).
 Some of these might be better derived at a secondary layer/cache by a "watcher".
 - [x] Init Actor (id_addresses)
-- [ ] Cron Actor
-- [ ] Reward Actor
-- [ ] Account Actor
-- [ ] Storage Marker Actor
-- [ ] Storage Miner Actor
-- [ ] MultiSig Actor
-- [ ] Payment Channel Actor
-- [ ] Storage Power Actor
-- [ ] Verified Registry Actor
-- [ ] System Actor
+- [x] Cron Actor
+- [x] Reward Actor
+- [x] Account Actor
+- [x] Storage Marker Actor
+- [x] Storage Miner Actor
+- [x] MultiSig Actor
+- [x] Payment Channel Actor
+- [x] Storage Power Actor
+- [x] Verified Registry Actor
+- [x] System Actor (NA)
 - [ ] User Actors
 
 ## Move on to more auxiliary/meta (TBD) data
@@ -35,14 +35,12 @@ For the below, determine the relevancy before adding back in. We want our DB to 
 secondary caches/layers/watcher can derive missing information from the core data.
 
 ### Summaries:
-TODO: ask Riba which of these are critical (from consensus perpsective and also from end-user/utility perspective)  
 * Chain economics
 * Chain powers
 * Chain rewards
 * Message gas economies
 
 ### More miner meta:
-TODO: ask Riba which of these are critical (from consensus perpsective and also from end-user/utility perspective)  
 * Miner current deadline infos
 * Miner debts
 * Miner locked funds
@@ -50,6 +48,13 @@ TODO: ask Riba which of these are critical (from consensus perpsective and also 
 
 ## More message details
 * Derived gas outputs
+
+## DB scripts and utils
+- [x] Makefile
+- [x] Dockerfile and compose files
+- [x] Sanity checking scripts
+- [ ] Github actions
+- [ ] UML
 
 ## Create and apply indexes
 - [ ] Indexes
