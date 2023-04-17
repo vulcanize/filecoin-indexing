@@ -1,0 +1,29 @@
+version: '3.2'
+
+services:
+  migrations:
+    restart: on-failure
+    depends_on:
+      - ipld-fil-db
+    image: vulcanize/ipld-fil-db
+    # Build image using local context
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_USER: "fil"
+      DATABASE_NAME: "filecoin_testing"
+      DATABASE_PASSWORD: "password"
+      DATABASE_HOSTNAME: "ipld-fil-db"
+      DATABASE_PORT: 5432
+
+  ipld-fil-db:
+    image: timescale/timescaledb:latest-pg14
+    restart: always
+    command: ["postgres", "-c", "log_statement=all"]
+    environment:
+      POSTGRES_USER: "fil"
+      POSTGRES_DB: "filecoin_testing"
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "127.0.0.1:8077:5432"
