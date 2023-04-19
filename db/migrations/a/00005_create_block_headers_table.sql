@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS filecoin.block_headers (
     win_count                        BIGINT,
     parent_base_fee                  TEXT NOT NULL,
     fork_signaling                   BIGINT NOT NULL,
-    PRIMARY KEY (height, block_cid)
+    PRIMARY KEY (height, block_cid, parent_state_root_cid)
 );
 
 -- +goose Down
