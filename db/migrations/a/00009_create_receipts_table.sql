@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS filecoin.receipts (
     PRIMARY KEY (height, block_cid, message_cid),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid)
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
 -- +goose Down

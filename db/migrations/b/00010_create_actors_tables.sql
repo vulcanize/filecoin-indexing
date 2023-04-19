@@ -16,14 +16,12 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
 
 -- NOTE: catchall for any actor state not represented with its own rich tables(s)
 CREATE TABLE IF NOT EXISTS filecoin.actor_states (
-   height    BIGINT NOT NULL,
+   height         BIGINT NOT NULL,
    state_root_cid TEXT NOT NULL,
-   id        TEXT NOT NULL,
-   state     JSONB NOT NULL,
-   PRIMARY KEY (height, state_root_cid, id),
+   id             TEXT NOT NULL,
+   state          JSONB NOT NULL,
    PRIMARY KEY (height, state_root_cid, id),
    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (height, state_root_cid) REFERENCES filecoin.tip_sets (height, parent_state_root_cid),
    FOREIGN KEY (height, state_root_cid, id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -40,7 +38,6 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     PRIMARY KEY (height, state_root_cid, message_cid, event_index),
     FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, state_root_cid) REFERENCES filecoin.tip_sets (height, parent_state_root_cid),
     FOREIGN KEY (height, state_root_cid, message_cid) REFERENCES filecoin.block_messages (height, state_root_cid, message_cid)
 );
 

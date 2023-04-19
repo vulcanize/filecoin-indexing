@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS filecoin.messages (
     PRIMARY KEY (height, block_cid, message_cid),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
     FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS filecoin.parsed_messages (
     PRIMARY KEY (height, block_cid, message_cid),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
     FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.messages (height, block_cid, message_cid)
 );
 
@@ -49,7 +47,6 @@ CREATE TABLE IF NOT EXISTS filecoin.internal_messages (
     PRIMARY KEY (height, block_cid, message_cid, source),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
     FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
@@ -62,7 +59,6 @@ CREATE TABLE IF NOT EXISTS filecoin.internal_parsed_messages (
     PRIMARY KEY (height, block_cid, message_cid, source),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
     FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.internal_messages (height, block_cid, message_cid)
 );
 
@@ -77,7 +73,6 @@ CREATE TABLE IF NOT EXISTS filecoin.vm_messages (
     PRIMARY KEY (height, block_cid, message_cid, source),
     FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
     FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
     FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
