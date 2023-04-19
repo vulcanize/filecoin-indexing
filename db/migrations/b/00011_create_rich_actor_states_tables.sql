@@ -57,15 +57,13 @@ CREATE TABLE IF NOT EXISTS filecoin.reward_actor_v2state (
     PRIMARY KEY (height, state_root_cid, reward_actor_id)
 );
 
--- TODO: investigate if this is m-to-1 or 1-to-1 per actors entry
 -- maps m-to-1 to an actors entry
 CREATE TABLE IF NOT EXISTS filecoin.account_actor_addresses (
     height           BIGINT NOT NULL,
     state_root_cid   TEXT NOT NULL,
     account_actor_id TEXT NOT NULL,
     address          TEXT NOT NULL,
-    selector_suffix  INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, account_actor_id, address)
+    PRIMARY KEY (height, state_root_cid, account_actor_id)
 );
 
 -- maps 1-to-1 to an actors entry
@@ -87,7 +85,6 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_state (
     total_provider_locked_collateral NUMERIC NOT NULL,
     total_client_storage_fee         NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id)
-
 );
 
 -- maps m-to-1 to a storage_actor_state entry
@@ -188,16 +185,14 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_ops_at_epoch (
     epoch                   BIGINT NOT NULL,
     deal_id                 BIGINT NOT NULL,
     selector_suffix         INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, storage_actor_id, epoch)
+    PRIMARY KEY (height, state_root_cid, storage_actor_id, epoch, deal_id)
 );
 
--- TODO: investigate if this is m-to-1 or 1-to-1 per actors entry e.g. is there an actor for each miner?
--- maps to m-to-1 to an actors entry
+-- maps to 1-to-1 to an actors entry
 CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v0states (
    height                                 BIGINT NOT NULL,
    state_root_cid                         TEXT NOT NULL,
    miner_actor_id                         TEXT NOT NULL,
-   miner_info_cid                         TEXT NOT NULL,
    pre_commit_deposits                    NUMERIC NOT NULL,
    locked_funds                           NUMERIC NOT NULL,
    initial_pledge                         NUMERIC NOT NULL,
@@ -209,17 +204,14 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v0states (
    current_deadline                       BIGINT NOT NULL,
    deadlines_cid                          TEXT NOT NULL,
    early_terminations                     BYTEA NOT NULL,
-   selector_suffix                        INT[] NOT NULL,
-   PRIMARY KEY (height, state_root_cid, miner_actor_id, miner_info_cid)
+   PRIMARY KEY (height, state_root_cid, miner_actor_id)
 );
 
--- TODO: investigate if this is m-to-1 or 1-to-1 per actors entry e.g. is there an actor for each miner?
--- maps to m-to-1 to an actors entry
+-- maps to 1-to-1 to an actors entry
 CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v2states (
     height                                 BIGINT NOT NULL,
     state_root_cid                         TEXT NOT NULL,
     miner_actor_id                         TEXT NOT NULL,
-    miner_info_cid                         TEXT NOT NULL,
     pre_commit_deposits                    NUMERIC NOT NULL,
     locked_funds                           NUMERIC NOT NULL,
     initial_pledge                         NUMERIC NOT NULL,
@@ -229,9 +221,9 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v2states (
     sectors_root_cid                       TEXT NOT NULL,
     proving_period_start                   NUMERIC NOT NULL,
     current_deadline                       BIGINT NOT NULL,
+    deadlines_cid                          BIGINT NOT NULL,
     early_terminations                     BYTEA NOT NULL,
-    selector_suffix                        INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, miner_actor_id, miner_info_cid)
+    PRIMARY KEY (height, state_root_cid, miner_actor_id)
 );
 
 -- maps 1-to-1 to a miner_actor_v0states entry
@@ -239,7 +231,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v2states (
 CREATE TABLE IF NOT EXISTS filecoin.miner_v0infos (
     height                    BIGINT NOT NULL,
     state_root_cid            TEXT NOT NULL,
-    miner_info_cid            TEXT NOT NULL,
+    miner_actor_id            TEXT NOT NULL,
     owner_id                  TEXT NOT NULL,
     worker_id                 TEXT NOT NULL,
     peer_id                   TEXT,
@@ -249,14 +241,14 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0infos (
     multi_addresses           JSONB,
     seal_proof_type           INT NOT NULL,
     sector_size               BIGINT NOT NULL,
-    PRIMARY KEY (height, state_root_cid, miner_info_cid)
+    PRIMARY KEY (height, state_root_cid, miner_actor_id)
 );
 
 -- maps 1-to-1 to a miner_actor_v2states entry
 CREATE TABLE IF NOT EXISTS filecoin.miner_v2infos (
     height                    BIGINT NOT NULL,
     state_root_cid            TEXT NOT NULL,
-    miner_info_cid            TEXT NOT NULL,
+    miner_actor_id            TEXT NOT NULL,
     owner_id                  TEXT NOT NULL,
     worker_id                 TEXT NOT NULL,
     peer_id                   TEXT,
@@ -268,7 +260,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2infos (
     sector_size               BIGINT NOT NULL,
     consensus_faulted_elapsed BIGINT NOT NULL,
     pending_owner             TEXT,
-    PRIMARY KEY (height, state_root_cid, miner_info_cid)
+    PRIMARY KEY (height, state_root_cid, miner_actor_id)
 );
 
 -- maps m-to-1 to a miner_actor_v0states or miner_actor_v2states
@@ -392,6 +384,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0partitions (
     state_root_cid                  TEXT NOT NULL,
     miner_info_cid                  TEXT NOT NULL,
     deadline_index                  INT NOT NULL,
+    partition_number                INT NOT NULL,
     sectors                         BYTEA NOT NULL,
     faults                          BYTEA NOT NULL,
     recoveries                      BYTEA NOT NULL,
@@ -405,7 +398,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0partitions (
     recovering_power_pair_raw       NUMERIC NOT NULL,
     recovering_power_pair_qa        NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index)
+    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index, partition_number)
 );
 
 -- maps m-to-1 to a miner_v2deadlines entry
@@ -414,6 +407,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2partitions (
     state_root_cid                  TEXT NOT NULL,
     miner_info_cid                  TEXT NOT NULL,
     deadline_index                  INT NOT NULL,
+    partition_number                INT NOT NULL,
     sectors                         BYTEA NOT NULL,
     faults                          BYTEA NOT NULL,
     unproven                        BYTEA NOT NULL,
@@ -430,7 +424,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2partitions (
     recovering_power_pair_raw       NUMERIC NOT NULL,
     recovering_power_pair_qa        NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index)
+    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index, partition_number)
 );
 
 -- maps m-to-1 to a miner_v0partitions or miner_v2partitions entry
@@ -439,6 +433,8 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_partition_expirations (
     state_root_cid                  TEXT NOT NULL,
     miner_info_cid                  TEXT NOT NULL,
     deadline_index                  INT NOT NULL,
+    partition_number                INT NOT NULL,
+    epoch                           BIGINT NOT NULL,
     on_time_sectors                 BYTEA NOT NULL,
     early_sectors                   BYTEA NOT NULL,
     on_time_pledge                  NUMERIC NOT NULL,
@@ -447,7 +443,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_partition_expirations (
     faulty_power_pair_raw           NUMERIC NOT NULL,
     faulty_power_pair_qa            NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index)
+    PRIMARY KEY (height, state_root_cid, miner_info_cid, deadline_index, partition_number, epoch)
 );
 
 -- maps 1-to-1 to an actors entry
@@ -476,7 +472,7 @@ CREATE TABLE IF NOT EXISTS filecoin.multisig_pending_txs (
     params                          BYTEA NOT NULL,
     approved                        TEXT[] NOT NULL,
     selector_suffix                 INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, multisig_actor_id)
+    PRIMARY KEY (height, state_root_cid, multisig_actor_id, transaction_id)
 );
 
 -- maps 1-to-1 to an actors entry
