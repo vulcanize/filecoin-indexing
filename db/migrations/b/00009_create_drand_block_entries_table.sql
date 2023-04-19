@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.drand_block_entries (
-    height             TEXT NOT NULL, -- this table is small, only one entry per epoch, but lets partition by height anyways to improve data locality
+    height             BIGINT NOT NULL, -- this table is small, only one entry per epoch, but lets partition by height anyways to improve data locality
     block_cid          TEXT NOT NULL,
     round              BIGINT NOT NULL,
     signature          TEXT NOT NULL,
