@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS filecoin.drand_block_entries (
     signature          TEXT NOT NULL,
     previous_signature TEXT NOT NULL,
     PRIMARY KEY (height, block_cid, round),
-    FOREIGN KEY (block_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid)
 );
 

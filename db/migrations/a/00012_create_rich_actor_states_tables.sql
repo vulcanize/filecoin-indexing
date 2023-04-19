@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS filecoin.init_actor_id_addresses (
     id              TEXT NOT NULL,
     selector_suffix INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, init_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, init_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS filecoin.cron_actor_method_receivers (
     method_num      INT NOT NULL,
     selector_suffix INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, cron_actor_id, receiver, method_num),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, cron_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS filecoin.reward_actor_v0state (
     this_epoch_baseline_power NUMERIC NOT NULL,
     total_mined               NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, reward_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, reward_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS filecoin.reward_actor_v2state (
     simple_total               NUMERIC NOT NULL,
     baseline_total             NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, reward_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, reward_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS filecoin.account_actor_addresses (
     account_actor_id TEXT NOT NULL,
     address          TEXT NOT NULL,
     PRIMARY KEY (height, state_root_cid, account_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, account_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -95,13 +95,13 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_state (
     total_provider_locked_collateral NUMERIC NOT NULL,
     total_client_storage_fee         NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (proposals_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (deals_proposals_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (pending_proposals_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (escrows_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (locked_tokens_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (deal_ops_by_epoch_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, proposals_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, deals_proposals_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, pending_proposals_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, escrows_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, locked_tokens_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, deal_ops_by_epoch_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -125,8 +125,8 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_proposals (
     label                   TEXT,
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, deal_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (piece_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, piece_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_proposal_states (
     slash_epoch             NUMERIC NOT NULL, -- -1 if never slashed
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, deal_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -165,9 +165,9 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_pending_proposals (
     label                   TEXT,
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, deal_cid),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (deal_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (piece_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, deal_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, piece_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_escrows (
     value                   NUMERIC NOT NULL,
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_locked_tokens (
     value                   NUMERIC NOT NULL,
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -205,8 +205,8 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_ops_buckets (
     epoch                   BIGINT NOT NULL,
     deals_root_cid          BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, epoch),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (deals_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, deals_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id)
 );
 
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_ops_at_epoch (
     deal_id                 BIGINT NOT NULL,
     selector_suffix         INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_actor_id, epoch, deal_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_actor_id, epoch) REFERENCES filecoin.storage_actor_deal_ops_buckets (height, state_root_cid, storage_actor_id, epoch)
 );
 
@@ -241,13 +241,13 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v0states (
    deadlines_cid                          BIGINT NOT NULL,
    early_terminations                     BYTEA NOT NULL,
    PRIMARY KEY (height, state_root_cid, miner_actor_id),
-   FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (vesting_funds_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (pre_committed_sectors_root_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (allocated_sectors_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (sectors_root_cid) REFERENCES ipld.blocks (key),
-   FOREIGN KEY (deadlines_cid) REFERENCES ipld.blocks (key),
+   FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, vesting_funds_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, pre_committed_sectors_root_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, allocated_sectors_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, sectors_root_cid) REFERENCES ipld.blocks (height, key),
+   FOREIGN KEY (height, deadlines_cid) REFERENCES ipld.blocks (height, key),
    FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -269,13 +269,13 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_actor_v2states (
     deadlines_cid                          BIGINT NOT NULL,
     early_terminations                     BYTEA NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (vesting_funds_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (pre_committed_sectors_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (allocated_sectors_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (sectors_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (deadlines_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, vesting_funds_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, pre_committed_sectors_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, allocated_sectors_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, sectors_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, deadlines_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0infos (
     seal_proof_type           INT NOT NULL,
     sector_size               BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0states (height, state_root_cid, miner_actor_id)
 );
 
@@ -316,7 +316,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2infos (
     consensus_faulted_elapsed BIGINT NOT NULL,
     pending_owner             TEXT,
     PRIMARY KEY (height, state_root_cid, miner_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2states (height, state_root_cid, miner_actor_id)
 );
 
@@ -328,7 +328,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_vesting_funds (
     vests_at                  BIGINT NOT NULL,
     amount                    NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, vests_at),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0states (height, state_root_cid, miner_actor_id)
 );
 
@@ -347,9 +347,9 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0deadlines (
     faulty_power_pair_raw      NUMERIC NOT NULL,
     faulty_power_pair_qa       NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, index),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (partitions_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (expiration_epochs_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, partitions_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0states (height, state_root_cid, miner_actor_id)
 );
 
@@ -371,9 +371,9 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2deadlines (
     faulty_power_pair_raw      NUMERIC NOT NULL,
     faulty_power_pair_qa       NUMERIC NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, index),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (partitions_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (expiration_epochs_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, partitions_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2states (height, state_root_cid, miner_actor_id)
 );
 
@@ -398,8 +398,8 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_pre_committed_sector_infos (
     replace_sector_number           BIGINT NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (sealed_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0states (height, state_root_cid, miner_actor_id)
 );
 
@@ -421,8 +421,8 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0sector_infos (
     expected_storage_pledge         NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (sealed_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0states (height, state_root_cid, miner_actor_id)
 );
 
@@ -446,8 +446,8 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2sector_infos (
     replaced_day_reward             NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (sealed_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2states (height, state_root_cid, miner_actor_id)
 );
 
@@ -472,9 +472,9 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v0partitions (
     recovering_power_pair_qa        NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (expiration_epochs_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (early_terminated_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, early_terminated_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index) REFERENCES filecoin.miner_v0deadlines (height, state_root_cid, miner_actor_id, index)
 );
 
@@ -502,9 +502,9 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_v2partitions (
     recovering_power_pair_qa        NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (expiration_epochs_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (early_terminated_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, early_terminated_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index) REFERENCES filecoin.miner_v2deadlines (height, state_root_cid, miner_actor_id, index)
 );
 
@@ -525,7 +525,7 @@ CREATE TABLE IF NOT EXISTS filecoin.miner_partition_expirations (
     faulty_power_pair_qa            NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number, epoch),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number) REFERENCES filecoin.miner_v0partitions (height, state_root_cid, miner_actor_id, deadline_index, partition_number)
 );
 
@@ -542,8 +542,8 @@ CREATE TABLE IF NOT EXISTS filecoin.multisig_actor_states (
     unlock_duration                 BIGINT NOT NULL,
     pending_txs_root_cid            BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, multisig_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (pending_txs_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, pending_txs_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, multisig_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -559,7 +559,7 @@ CREATE TABLE IF NOT EXISTS filecoin.multisig_pending_txs (
     approved                        TEXT[] NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, multisig_actor_id, transaction_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, multisig_actor_id) REFERENCES filecoin.multisig_actor_states (height, state_root_cid, multisig_actor_id)
 );
 
@@ -575,8 +575,8 @@ CREATE TABLE IF NOT EXISTS filecoin.payment_channel_actor_state (
     min_settle_height               BIGINT NOT NULL,
     lane_states_root_cid            BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, payment_channel_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (lane_states_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, lane_states_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, payment_channel_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -590,7 +590,7 @@ CREATE TABLE IF NOT EXISTS filecoin.payment_channel_lane_states (
     nonce                           BIGINT NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, payment_channel_actor_id, lane_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, payment_channel_actor_id) REFERENCES filecoin.payment_channel_actor_state (height, state_root_cid, payment_channel_actor_id)
 );
 
@@ -617,10 +617,10 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_actor_v0state (
     claims_root_cid                  BIGINT NOT NULL,
     proof_validation_batch_root_cid  BIGINT,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (cron_event_queue_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (claims_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (proof_validation_batch_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, cron_event_queue_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, claims_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, proof_validation_batch_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -646,10 +646,10 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_actor_v2state (
     claims_root_cid                  BIGINT NOT NULL,
     proof_validation_batch_root_cid  BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (cron_event_queue_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (claims_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (proof_validation_batch_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, cron_event_queue_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, claims_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, proof_validation_batch_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -660,7 +660,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_cron_event_buckets (
     storage_power_actor_id          TEXT NOT NULL,
     epoch                           BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, epoch),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id)
 );
 
@@ -675,7 +675,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_cron_events (
     callback_payload                BYTEA NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, epoch, index),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id, epoch) REFERENCES filecoin.storage_power_cron_event_buckets (height, state_root_cid, storage_power_actor_id, epoch)
 );
 
@@ -689,7 +689,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_v0claims (
     quality_adj_power               NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id)
 );
 
@@ -704,7 +704,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_v2claims (
     quality_adj_power               NUMERIC NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v2state (height, state_root_cid, storage_power_actor_id)
 );
 
@@ -715,7 +715,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_proof_validation_buckets (
     storage_power_actor_id          TEXT NOT NULL,
     address                         TEXT NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id)
 );
 
@@ -736,9 +736,9 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_power_proof_seal_verify_infos (
     unsealed_cid                    BIGINT NOT NULL,
     selector_suffix                 INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address, index),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (sealed_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (unsealed_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, unsealed_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, storage_power_actor_id, address) REFERENCES filecoin.storage_power_proof_validation_buckets (height, state_root_cid, storage_power_actor_id, address)
 );
 
@@ -751,9 +751,9 @@ CREATE TABLE IF NOT EXISTS filecoin.verified_registry_actor_state (
     verifiers_root_cid               BIGINT NOT NULL,
     verified_clients_root_cid        BIGINT NOT NULL,
     PRIMARY KEY (height, state_root_cid, verified_registry_actor_id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (verifiers_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (verified_clients_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, verifiers_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, verified_clients_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, verified_registry_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
@@ -766,7 +766,7 @@ CREATE TABLE IF NOT EXISTS filecoin.verified_registry_verifiers (
     data_cap                         NUMERIC NOT NULL,
     selector_suffix                  INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, verified_registry_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, verified_registry_actor_id) REFERENCES filecoin.verified_registry_actor_state (height, state_root_cid, verified_registry_actor_id)
 );
 
@@ -779,7 +779,7 @@ CREATE TABLE IF NOT EXISTS filecoin.verified_registry_clients (
     data_cap                         NUMERIC NOT NULL,
     selector_suffix                  INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, verified_registry_actor_id, address),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, verified_registry_actor_id) REFERENCES filecoin.verified_registry_actor_state (height, state_root_cid, verified_registry_actor_id)
 );
 

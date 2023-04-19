@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
     balance         TEXT NOT NULL,
     selector_suffix INT[] NOT NULL,
     PRIMARY KEY (height, state_root_cid, id),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (head_cid) REFERENCES ipld.blocks (key),
+    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, head_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid) REFERENCES filecoin.tip_sets (height, parent_state_root_cid)
 );
 
@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_states (
    id             TEXT NOT NULL,
    state          JSONB NOT NULL,
    PRIMARY KEY (height, state_root_cid, id),
-   FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
+   FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
    FOREIGN KEY (height, state_root_cid, id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     height 			BIGINT 	NOT NULL,
-    state_root_cid  TEXT 	NOT NULL,
+    block_cid       TEXT 	NOT NULL,
     message_cid 	TEXT	NOT NULL,
     event_index 	BIGINT 	NOT NULL,
     emitter 		TEXT	NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     codec			BIGINT 	NOT NULL,
     key 			TEXT 	NOT NULL,
     value			BYTEA	NOT NULL,
-    PRIMARY KEY (height, state_root_cid, message_cid, event_index),
-    FOREIGN KEY (state_root_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (message_cid) REFERENCES ipld.blocks (key),
-    FOREIGN KEY (height, state_root_cid, message_cid) REFERENCES filecoin.block_messages (height, state_root_cid, message_cid)
+    PRIMARY KEY (height, block_cid, message_cid, event_index),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
 -- +goose Down
