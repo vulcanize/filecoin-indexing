@@ -1,8 +1,8 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.block_messages (
     height      BIGINT NOT NULL,
-    block_cid   TEXT NOT NULL,
-    message_cid TEXT NOT NULL,
+    block_cid   BIGINT NOT NULL,
+    message_cid BIGINT NOT NULL,
     PRIMARY KEY (height, block_cid, message_cid),
     FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),

@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS filecoin.block_headers (
     height                           BIGINT NOT NULL, -- part of reference to tipsets
     block_cid                        TEXT NOT NULL,
-    parent_weight                    TEXT NOT NULL,
+    parent_weight                    NUMERIC NOT NULL,
     parent_state_root_cid            TEXT NOT NULL, -- part of reference to tipsets / CID pointing to StateRoot struct IPLD (which contains Version info and link to ActorsHAMT IPLD)
     parent_tip_set_key_cid           TEXT NOT NULL, -- part of reference to tipsets
     parent_message_receipts_root_cid TEXT NOT NULL, -- CID pointing to MessageReceiptAMT IPLD
@@ -14,7 +14,12 @@ CREATE TABLE IF NOT EXISTS filecoin.block_headers (
     win_count                        BIGINT,
     parent_base_fee                  TEXT NOT NULL,
     fork_signaling                   BIGINT NOT NULL,
-    PRIMARY KEY (height, block_cid, parent_state_root_cid)
+    PRIMARY KEY (height, block_cid),
+    FOREIGN KEY (height, parent_state_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, parent_message_receipts_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, messages_root_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES filecoin.tip_sets (height, parent_tip_set_key_cid)
 );
 
 -- +goose Down

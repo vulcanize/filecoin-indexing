@@ -1,10 +1,10 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.actors (
     height          BIGINT NOT NULL,
-    state_root_cid  TEXT NOT NULL,
+    state_root_cid  BIGINT NOT NULL,
     id              TEXT NOT NULL,
     code            TEXT NOT NULL,
-    head_cid        TEXT NOT NULL,
+    head_cid        BIGINT NOT NULL,
     nonce           BIGINT NOT NULL,
     balance         TEXT NOT NULL,
     selector_suffix INT[] NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
 -- NOTE: catchall for any actor state not represented with its own rich tables(s)
 CREATE TABLE IF NOT EXISTS filecoin.actor_states (
    height         BIGINT NOT NULL,
-   state_root_cid TEXT NOT NULL,
+   state_root_cid BIGINT NOT NULL,
    id             TEXT NOT NULL,
    state          JSONB NOT NULL,
    PRIMARY KEY (height, state_root_cid, id),
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_states (
 
 CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     height 			BIGINT 	NOT NULL,
-    block_cid       TEXT 	NOT NULL,
-    message_cid 	TEXT	NOT NULL,
+    block_cid       BIGINT 	NOT NULL,
+    message_cid 	BIGINT	NOT NULL,
     event_index 	BIGINT 	NOT NULL,
     emitter 		TEXT	NOT NULL,
     flags 			BYTEA	NOT NULL,

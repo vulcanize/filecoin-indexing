@@ -13,7 +13,10 @@ CREATE TABLE IF NOT EXISTS filecoin.messages (
     gas_limit   BIGINT NOT NULL,
     method      BIGINT,
     selector_suffix INT[] NOT NULL,
-    PRIMARY KEY (height, block_cid, message_cid)
+    PRIMARY KEY (height, block_cid, message_cid),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.parsed_messages (
@@ -21,7 +24,10 @@ CREATE TABLE IF NOT EXISTS filecoin.parsed_messages (
     block_cid   TEXT NOT NULL,
     message_cid TEXT NOT NULL,
     params      JSONB,
-    PRIMARY KEY (height, block_cid, message_cid)
+    PRIMARY KEY (height, block_cid, message_cid),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.messages (height, block_cid, message_cid)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.internal_messages (
@@ -38,7 +44,10 @@ CREATE TABLE IF NOT EXISTS filecoin.internal_messages (
     exit_code       BIGINT NOT NULL,
     gas_used        BIGINT NOT NULL,
     selector_suffix INT[] NOT NULL,
-    PRIMARY KEY (height, block_cid, message_cid, source)
+    PRIMARY KEY (height, block_cid, message_cid, source),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.internal_parsed_messages (
@@ -47,7 +56,10 @@ CREATE TABLE IF NOT EXISTS filecoin.internal_parsed_messages (
     message_cid TEXT NOT NULL,
     source      TEXT NOT NULL,
     params      JSONB,
-    PRIMARY KEY (height, block_cid, message_cid, source)
+    PRIMARY KEY (height, block_cid, message_cid, source),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid, source) REFERENCES filecoin.internal_messages (height, block_cid, message_cid, source)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.vm_messages (
@@ -58,7 +70,10 @@ CREATE TABLE IF NOT EXISTS filecoin.vm_messages (
     actor_code  TEXT NOT NULL,
     params      JSONB,
     returns     JSONB,
-    PRIMARY KEY (height, block_cid, message_cid, source)
+    PRIMARY KEY (height, block_cid, message_cid, source),
+    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
+    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
 );
 
 -- +goose Down
