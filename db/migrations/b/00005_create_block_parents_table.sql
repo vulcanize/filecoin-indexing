@@ -3,11 +3,7 @@ CREATE TABLE IF NOT EXISTS filecoin.block_parents (
     height     BIGINT NOT NULL,
     block_cid  TEXT NOT NULL,
     parent_cid TEXT NOT NULL,
-    PRIMARY KEY (height, block_cid, parent_cid),
-    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, block_cid) REFERENCES filecoin.block_headers (height, block_cid),
-    FOREIGN KEY (height, parent_cid) REFERENCES filecoin.block_headers (height, block_cid)
+    PRIMARY KEY (height, block_cid, parent_cid)
 );
 
 -- +goose Down
