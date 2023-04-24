@@ -17,10 +17,10 @@ CREATE TABLE IF NOT EXISTS filecoin.cron_actor_method_receivers (
     height          BIGINT NOT NULL,
     state_root_cid  BIGINT NOT NULL,
     cron_actor_id   TEXT NOT NULL,
+    index           INT NOT NULL,
     receiver        TEXT NOT NULL,
     method_num      INT NOT NULL,
-    selector_suffix INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, cron_actor_id, receiver, method_num),
+    PRIMARY KEY (height, state_root_cid, cron_actor_id, receiver, index),
     FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
     FOREIGN KEY (height, state_root_cid, cron_actor_id) REFERENCES filecoin.actors (height, state_root_cid, id)
 );
