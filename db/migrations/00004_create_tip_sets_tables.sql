@@ -4,9 +4,7 @@ CREATE TABLE IF NOT EXISTS filecoin.tip_sets (
     parent_tip_set_key_cid	BIGINT NOT NULL,
     parent_state_root_cid   BIGINT NOT NULL,
     PRIMARY KEY (height, parent_tip_set_key_cid),
-    UNIQUE (height, parent_state_root_cid),
-    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_state_root_cid) REFERENCES ipld.blocks (height, key)
+    UNIQUE (height, parent_state_root_cid)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.tip_set_members (
@@ -14,10 +12,7 @@ CREATE TABLE IF NOT EXISTS filecoin.tip_set_members (
     parent_tip_set_key_cid  BIGINT NOT NULL,
     index                   INT NOT NULL,
     block_cid               BIGINT NOT NULL,
-    PRIMARY KEY (height, parent_tip_set_key_cid, index),
-    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES filecoin.tip_sets (height, parent_tip_set_key_cid)
+    PRIMARY KEY (height, parent_tip_set_key_cid, index)
 );
 
 -- +goose Down

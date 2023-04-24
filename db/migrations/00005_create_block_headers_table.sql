@@ -14,12 +14,7 @@ CREATE TABLE IF NOT EXISTS filecoin.block_headers (
     win_count                        BIGINT,
     parent_base_fee                  TEXT NOT NULL,
     fork_signaling                   BIGINT NOT NULL,
-    PRIMARY KEY (height, block_cid),
-    FOREIGN KEY (height, parent_state_root_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_message_receipts_root_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, messages_root_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, parent_tip_set_key_cid) REFERENCES filecoin.tip_sets (height, parent_tip_set_key_cid)
+    PRIMARY KEY (height, block_cid)
 );
 
 -- +goose Down
