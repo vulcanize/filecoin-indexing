@@ -53,16 +53,6 @@ rollback: $(GOOSE) checkdbvars
 rollback_to: $(GOOSE) checkmigration checkdbvars
 	$(GOOSE) -dir db/migrations postgres "$(CONNECT_STRING)" down-to "$(MIGRATION)"
 
-## Rollback pre_batch_set
-.PHONY: `rollback_pre_batch_set`
-rollback_pre_batch_set: $(GOOSE) checkdbvars
-	$(GOOSE) -dir db/pre_batch_processing_migrations postgres "$(CONNECT_STRING)" down
-
-## Rollback post_batch_set
-.PHONY: rollback_post_batch_set
-rollback_post_batch_set: $(GOOSE) checkdbvars
-	$(GOOSE) -dir db/post_batch_processing_migrations postgres "$(CONNECT_STRING)" down
-
 ## Apply the next up migration
 .PHONY: migrate_up_by_one
 migrate_up_by_one: $(GOOSE) checkdbvars
@@ -73,21 +63,6 @@ migrate_up_by_one: $(GOOSE) checkdbvars
 migrate: $(GOOSE) checkdbvars
 	$(GOOSE) -dir db/migrations postgres "$(CONNECT_STRING)" up
 	pg_dump -O -s $(CONNECT_STRING) > schema.sql
-
-## Apply migrations to be ran before a batch processing
-.PHONY: migrate_pre_batch_set
-migrate_pre_batch_set: $(GOOSE) checkdbvars
-	$(GOOSE) -dir db/pre_batch_processing_migrations postgres "$(CONNECT_STRING)" up
-
-## Apply migrations to be ran after a batch processing, one-by-one
-.PHONY: migrate_post_batch_set_up_by_one
-migrate_post_batch_set_up_by_one: $(GOOSE) checkdbvars
-	$(GOOSE) -dir db/post_batch_processing_migrations postgres "$(CONNECT_STRING)" up-by-one
-
-## Apply migrations to be ran after a batch processing
-.PHONY: migrate_post_batch_set
-migrate_post_batch_set: $(GOOSE) checkdbvars
-	$(GOOSE) -dir db/post_batch_processing_migrations postgres "$(CONNECT_STRING)" up
 
 ## Create a new migration file
 .PHONY: new_migration

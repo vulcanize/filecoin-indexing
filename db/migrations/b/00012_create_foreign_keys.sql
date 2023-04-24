@@ -133,19 +133,19 @@ FOREIGN KEY (height, block_cid, message_cid)
 REFERENCES filecoin.block_messages (height, block_cid, message_cid);
 
 ALTER TABLE filecoin.internal_parsed_messages
-ADD CONSTRAINT int_parsed_messages_height_block_cid_ipld_blocks_fkey
+ADD CONSTRAINT int_parsed_msgs_height_block_cid_ipld_blocks_fkey
 FOREIGN KEY (height, block_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.internal_parsed_messages
-ADD CONSTRAINT int_parsed_messages_height_message_cid_ipld_blocks_fkey
+ADD CONSTRAINT int_parsed_msgs_height_msg_cid_ipld_blocks_fkey
 FOREIGN KEY (height, message_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.internal_parsed_messages
-ADD CONSTRAINT int_parsed_messages_height_block_cid_message_cid_messages_fkey
-FOREIGN KEY (height, block_cid, message_cid)
-REFERENCES filecoin.internal_messages (height, block_cid, message_cid);
+ADD CONSTRAINT int_parsed_msgs_height_block_cid_msg_cid_src_msgs_fkey
+FOREIGN KEY (height, block_cid, message_cid, source)
+REFERENCES filecoin.internal_messages (height, block_cid, message_cid, source);
 
 ALTER TABLE filecoin.vm_messages
 ADD CONSTRAINT vm_messages_height_block_cid_ipld_blocks_fkey
@@ -1308,13 +1308,13 @@ ALTER TABLE filecoin.vm_messages
 DROP CONSTRAINT vm_messages_height_block_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.internal_parsed_messages
-DROP CONSTRAINT int_parsed_messages_height_block_cid_message_cid_messages_fkey;
+DROP CONSTRAINT int_parsed_msgs_height_block_cid_msg_cid_src_msgs_fkey;
 
 ALTER TABLE filecoin.internal_parsed_messages
-DROP CONSTRAINT int_parsed_messages_height_message_cid_ipld_blocks_fkey;
+DROP CONSTRAINT int_parsed_msgs_height_msg_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.internal_parsed_messages
-DROP CONSTRAINT int_parsed_messages_height_block_cid_ipld_blocks_fkey;
+DROP CONSTRAINT int_parsed_msgs_height_block_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.internal_messages
 DROP CONSTRAINT internal_msgs_height_block_cid_message_cid_block_messages_fkey;
