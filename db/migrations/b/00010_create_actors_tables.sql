@@ -8,10 +8,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
     nonce           BIGINT NOT NULL,
     balance         TEXT NOT NULL,
     selector_suffix INT[] NOT NULL,
-    PRIMARY KEY (height, state_root_cid, id),
-    FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, head_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, state_root_cid) REFERENCES filecoin.tip_sets (height, parent_state_root_cid)
+    PRIMARY KEY (height, state_root_cid, id)
 );
 
 -- NOTE: catchall for any actor state not represented with its own rich tables(s)
@@ -20,9 +17,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_states (
    state_root_cid TEXT NOT NULL,
    id             TEXT NOT NULL,
    state          JSONB NOT NULL,
-   PRIMARY KEY (height, state_root_cid, id),
-   FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks (height, key),
-   FOREIGN KEY (height, state_root_cid, id) REFERENCES filecoin.actors (height, state_root_cid, id)
+   PRIMARY KEY (height, state_root_cid, id)
 );
 
 CREATE TABLE IF NOT EXISTS filecoin.actor_events (
@@ -35,10 +30,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     codec			BIGINT 	NOT NULL,
     key 			TEXT 	NOT NULL,
     value			BYTEA	NOT NULL,
-    PRIMARY KEY (height, block_cid, message_cid, event_index),
-    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
+    PRIMARY KEY (height, block_cid, message_cid, event_index)
 );
 
 -- +goose Down

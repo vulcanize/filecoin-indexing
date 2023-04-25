@@ -8,10 +8,7 @@ CREATE TABLE IF NOT EXISTS filecoin.receipts (
     gas_used        BIGINT NOT NULL,
     return          BYTEA,
     selector_suffix INT[] NOT NULL,
-    PRIMARY KEY (height, block_cid, message_cid),
-    FOREIGN KEY (height, block_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, message_cid) REFERENCES ipld.blocks (height, key),
-    FOREIGN KEY (height, block_cid, message_cid) REFERENCES filecoin.block_messages (height, block_cid, message_cid)
+    PRIMARY KEY (height, block_cid, message_cid)
 );
 
 -- +goose Down
