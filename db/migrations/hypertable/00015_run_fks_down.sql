@@ -1,5 +1,23 @@
 -- +goose Up
 -- rich actor state tables
+ALTER TABLE filecoin.fevm_actor_storage
+DROP CONSTRAINT fevm_a_stor_height_sta_root_cid_sta_acct_id_fevm_a_sta_fkey;
+
+ALTER TABLE filecoin.fevm_actor_storage
+DROP CONSTRAINT fevm_actor_storage_height_state_root_cid_ipld_blocks_fkey;
+
+ALTER TABLE filecoin.fevm_actor_state
+DROP CONSTRAINT fevm_act_state_height_state_root_cid_state_acct_id_actors_fkey;
+
+ALTER TABLE filecoin.fevm_actor_state
+DROP CONSTRAINT fevm_actor_state_height_logs_root_cid_ipld_blocks_fkey;
+
+ALTER TABLE filecoin.fevm_actor_state
+DROP CONSTRAINT fevm_actor_state_height_storage_root_cid_ipld_blocks_fkey;
+
+ALTER TABLE filecoin.fevm_actor_state
+DROP CONSTRAINT fevm_actor_state_height_state_root_cid_ipld_blocks_fkey;
+
 ALTER TABLE filecoin.verified_registry_clients
 DROP CONSTRAINT reg_clients_height_state_root_cid_ver_reg_actor_id_ver_reg_fkey;
 
@@ -1405,3 +1423,33 @@ ALTER TABLE filecoin.verified_registry_clients
 ADD CONSTRAINT reg_clients_height_state_root_cid_ver_reg_actor_id_ver_reg_fkey
 FOREIGN KEY (height, state_root_cid, verified_registry_actor_id)
 REFERENCES filecoin.verified_registry_actor_state (height, state_root_cid, verified_registry_actor_id);
+
+ALTER TABLE filecoin.fevm_actor_state
+ADD CONSTRAINT fevm_actor_state_height_state_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, state_root_cid)
+REFERENCES ipld.blocks (height, key);
+
+ALTER TABLE filecoin.fevm_actor_state
+ADD CONSTRAINT fevm_actor_state_height_storage_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, storage_root_cid)
+REFERENCES ipld.blocks (height, key);
+
+ALTER TABLE filecoin.fevm_actor_state
+ADD CONSTRAINT fevm_actor_state_height_logs_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, logs_root_cid)
+REFERENCES ipld.blocks (height, key);
+
+ALTER TABLE filecoin.fevm_actor_state
+ADD CONSTRAINT fevm_act_state_height_state_root_cid_state_acct_id_actors_fkey
+FOREIGN KEY (height, state_root_cid, state_account_id)
+REFERENCES filecoin.actors (height, state_root_cid, id);
+
+ALTER TABLE filecoin.fevm_actor_storage
+ADD CONSTRAINT fevm_actor_storage_height_state_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, state_root_cid)
+REFERENCES ipld.blocks (height, key);
+
+ALTER TABLE filecoin.fevm_actor_storage
+ADD CONSTRAINT fevm_a_stor_height_sta_root_cid_sta_acct_id_fevm_a_sta_fkey
+FOREIGN KEY (height, state_root_cid, state_account_id)
+REFERENCES filecoin.fevm_actor_state (height, state_root_cid, state_account_id);
