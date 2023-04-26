@@ -656,7 +656,32 @@ CREATE TABLE IF NOT EXISTS filecoin.verified_registry_clients (
     PRIMARY KEY (height, state_root_cid, verified_registry_actor_id, address)
 );
 
+-- maps 1-to-1 to an actors entry
+CREATE TABLE IF NOT EXISTS filecoin.fevm_actor_state (
+    height                BIGINT NOT NULL,
+    state_root_cid        TEXT NOT NULL,
+    state_account_id      TEXT NOT NULL,
+    byte_code             BYTEA, -- NULL if "removed"
+    storage_root_cid      TEXT,  -- NULL if "removed"
+    logs_root_cid         TEXT,  -- NULL IF "removed"
+    removed               BOOLEAN NOT NULL,
+    PRIMARY KEY (height, state_root_cid, state_account_id)
+);
+
+-- maps m-to-1 to a fevm_actor_state entry
+CREATE TABLE IF NOT EXISTS filecoin.fevm_actor_storage (
+    height                BIGINT NOT NULL,
+    state_root_cid        TEXT NOT NULL,
+    state_account_id      TEXT NOT NULL,
+    storage_key           TEXT NOT NULL,
+    val                   BYTEA,  -- NULL if "removed"
+    removed               BOOLEAN NOT NULL,
+    PRIMARY KEY (height, state_root_cid, state_account_id, storage_key)
+);
+
 -- +goose Down
+DROP TABLE filecoin.fevm_actor_storage;
+DROP TABLE filecoin.fevm_actor_state;
 DROP TABLE filecoin.verified_registry_clients;
 DROP TABLE filecoin.verified_registry_verifiers;
 DROP TABLE filecoin.verified_registry_actor_state;
