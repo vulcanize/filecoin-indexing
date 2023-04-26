@@ -657,11 +657,11 @@ CREATE TABLE IF NOT EXISTS filecoin.verified_registry_clients (
 );
 
 -- maps 1-to-1 to an actors entry
-CREATE TABLE IF NOT EXISTS eth.fevm_actor_state (
+CREATE TABLE IF NOT EXISTS filecoin.fevm_actor_state (
     height                BIGINT NOT NULL,
     state_root_cid        BIGINT NOT NULL,
     state_account_id      TEXT NOT NULL,
-    byte_code             BYTEA, -- NULL if "removed"
+    byte_code             BYTEA,   -- NULL if "removed"
     storage_root_cid      BIGINT,  -- NULL if "removed"
     logs_root_cid         BIGINT,  -- NULL IF "removed"
     removed               BOOLEAN NOT NULL,
@@ -669,7 +669,7 @@ CREATE TABLE IF NOT EXISTS eth.fevm_actor_state (
 );
 
 -- maps m-to-1 to a fevm_actor_state entry
-CREATE TABLE IF NOT EXISTS eth.fevm_actor_storage (
+CREATE TABLE IF NOT EXISTS filecoin.fevm_actor_storage (
     height                BIGINT NOT NULL,
     state_root_cid        BIGINT NOT NULL,
     state_account_id      TEXT NOT NULL,

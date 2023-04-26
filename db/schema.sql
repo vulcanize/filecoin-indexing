@@ -206,6 +206,35 @@ CREATE TABLE filecoin.drand_block_entries (
 
 
 --
+-- Name: fevm_actor_state; Type: TABLE; Schema: filecoin; Owner: -
+--
+
+CREATE TABLE filecoin.fevm_actor_state (
+    height bigint NOT NULL,
+    state_root_cid bigint NOT NULL,
+    state_account_id text NOT NULL,
+    byte_code bytea,
+    storage_root_cid bigint,
+    logs_root_cid bigint,
+    removed boolean NOT NULL
+);
+
+
+--
+-- Name: fevm_actor_storage; Type: TABLE; Schema: filecoin; Owner: -
+--
+
+CREATE TABLE filecoin.fevm_actor_storage (
+    height bigint NOT NULL,
+    state_root_cid bigint NOT NULL,
+    state_account_id text NOT NULL,
+    storage_key text NOT NULL,
+    val bytea,
+    removed boolean NOT NULL
+);
+
+
+--
 -- Name: init_actor_id_addresses; Type: TABLE; Schema: filecoin; Owner: -
 --
 
@@ -1086,6 +1115,18 @@ CREATE TABLE ipld.blocks (
 
 
 --
+-- Name: db_version; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.db_version (
+    singleton boolean DEFAULT true NOT NULL,
+    version text NOT NULL,
+    tstamp timestamp without time zone DEFAULT now(),
+    CONSTRAINT db_version_singleton_check CHECK (singleton)
+);
+
+
+--
 -- Name: goose_db_version; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1209,6 +1250,22 @@ ALTER TABLE ONLY filecoin.cron_actor_method_receivers
 
 ALTER TABLE ONLY filecoin.drand_block_entries
     ADD CONSTRAINT drand_block_entries_pkey PRIMARY KEY (height, block_cid, round);
+
+
+--
+-- Name: fevm_actor_state fevm_actor_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_state
+    ADD CONSTRAINT fevm_actor_state_pkey PRIMARY KEY (height, state_root_cid, state_account_id);
+
+
+--
+-- Name: fevm_actor_storage fevm_actor_storage_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_storage
+    ADD CONSTRAINT fevm_actor_storage_pkey PRIMARY KEY (height, state_root_cid, state_account_id, storage_key);
 
 
 --
@@ -1604,6 +1661,14 @@ ALTER TABLE ONLY ipld.blocks
 
 
 --
+-- Name: db_version db_version_singleton_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.db_version
+    ADD CONSTRAINT db_version_singleton_key UNIQUE (singleton);
+
+
+--
 -- Name: goose_db_version goose_db_version_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1857,6 +1922,54 @@ ALTER TABLE ONLY filecoin.miner_partition_expirations
 
 ALTER TABLE ONLY filecoin.miner_partition_expirations
     ADD CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_v0ps_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number) REFERENCES filecoin.miner_v0partitions(height, state_root_cid, miner_actor_id, deadline_index, partition_number);
+
+
+--
+-- Name: fevm_actor_storage fevm_a_stor_height_sta_root_cid_sta_acct_id_fevm_a_sta_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_storage
+    ADD CONSTRAINT fevm_a_stor_height_sta_root_cid_sta_acct_id_fevm_a_sta_fkey FOREIGN KEY (height, state_root_cid, state_account_id) REFERENCES filecoin.fevm_actor_state(height, state_root_cid, state_account_id);
+
+
+--
+-- Name: fevm_actor_state fevm_act_state_height_state_root_cid_state_acct_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_state
+    ADD CONSTRAINT fevm_act_state_height_state_root_cid_state_acct_id_actors_fkey FOREIGN KEY (height, state_root_cid, state_account_id) REFERENCES filecoin.actors(height, state_root_cid, id);
+
+
+--
+-- Name: fevm_actor_state fevm_actor_state_height_logs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_state
+    ADD CONSTRAINT fevm_actor_state_height_logs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, logs_root_cid) REFERENCES ipld.blocks(height, key);
+
+
+--
+-- Name: fevm_actor_state fevm_actor_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_state
+    ADD CONSTRAINT fevm_actor_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+
+
+--
+-- Name: fevm_actor_state fevm_actor_state_height_storage_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_state
+    ADD CONSTRAINT fevm_actor_state_height_storage_root_cid_ipld_blocks_fkey FOREIGN KEY (height, storage_root_cid) REFERENCES ipld.blocks(height, key);
+
+
+--
+-- Name: fevm_actor_storage fevm_actor_storage_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.fevm_actor_storage
+    ADD CONSTRAINT fevm_actor_storage_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --

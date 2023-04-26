@@ -17,7 +17,7 @@ services:
       DATABASE_HOSTNAME: "ipld-fil-db"
       DATABASE_PORT: 5432
 
-  ipld-fil-db:
+  test-db:
     image: timescale/timescaledb:latest-pg14
     restart: always
     command: ["postgres", "-c", "log_statement=all"]
