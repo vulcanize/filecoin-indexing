@@ -216,6 +216,7 @@ CREATE TABLE filecoin.fevm_actor_state (
     byte_code bytea,
     storage_root_cid bigint,
     logs_root_cid bigint,
+    diff boolean NOT NULL,
     removed boolean NOT NULL
 );
 
@@ -228,9 +229,11 @@ CREATE TABLE filecoin.fevm_actor_storage (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     state_account_id text NOT NULL,
-    storage_key text NOT NULL,
+    storage_id text NOT NULL,
     val bytea,
-    removed boolean NOT NULL
+    diff boolean NOT NULL,
+    removed boolean NOT NULL,
+    selector_suffix integer[] NOT NULL
 );
 
 
@@ -304,10 +307,10 @@ CREATE TABLE filecoin.messages (
 
 
 --
--- Name: miner_actor_v0state; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: miner_actor_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.miner_actor_v0state (
+CREATE TABLE filecoin.miner_actor_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     miner_actor_id text NOT NULL,
@@ -327,25 +330,44 @@ CREATE TABLE filecoin.miner_actor_v0state (
 
 
 --
--- Name: miner_actor_v2state; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: miner_deadlines; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.miner_actor_v2state (
+CREATE TABLE filecoin.miner_deadlines (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     miner_actor_id text NOT NULL,
-    pre_commit_deposits numeric NOT NULL,
-    locked_funds numeric NOT NULL,
-    vesting_funds_cid bigint NOT NULL,
-    initial_pledge numeric NOT NULL,
-    pre_committed_sectors_root_cid bigint NOT NULL,
-    pre_committed_sectors_expiry_root_cid bigint NOT NULL,
-    allocated_sectors_cid bigint NOT NULL,
-    sectors_root_cid bigint NOT NULL,
-    proving_period_start numeric NOT NULL,
-    current_deadline bigint NOT NULL,
-    deadlines_cid bigint NOT NULL,
-    early_terminations bytea NOT NULL
+    index integer NOT NULL,
+    partitions_root_cid bigint NOT NULL,
+    expiration_epochs_root_cid bigint NOT NULL,
+    post_submissions bytea NOT NULL,
+    early_terminations bytea NOT NULL,
+    live_sectors bigint NOT NULL,
+    total_sectors bigint NOT NULL,
+    faulty_power_pair_raw numeric NOT NULL,
+    faulty_power_pair_qa numeric NOT NULL
+);
+
+
+--
+-- Name: miner_infos; Type: TABLE; Schema: filecoin; Owner: -
+--
+
+CREATE TABLE filecoin.miner_infos (
+    height bigint NOT NULL,
+    state_root_cid bigint NOT NULL,
+    miner_actor_id text NOT NULL,
+    owner_id text NOT NULL,
+    worker_id text NOT NULL,
+    peer_id text,
+    control_addresses jsonb,
+    new_worker text,
+    new_worker_start_epoch bigint,
+    multi_addresses jsonb,
+    seal_proof_type integer NOT NULL,
+    sector_size bigint NOT NULL,
+    consensus_faulted_elapsed bigint,
+    pending_owner text
 );
 
 
@@ -367,6 +389,35 @@ CREATE TABLE filecoin.miner_partition_expirations (
     active_power_pair_qa numeric NOT NULL,
     faulty_power_pair_raw numeric NOT NULL,
     faulty_power_pair_qa numeric NOT NULL,
+    selector_suffix integer[] NOT NULL
+);
+
+
+--
+-- Name: miner_partitions; Type: TABLE; Schema: filecoin; Owner: -
+--
+
+CREATE TABLE filecoin.miner_partitions (
+    height bigint NOT NULL,
+    state_root_cid bigint NOT NULL,
+    miner_actor_id text NOT NULL,
+    deadline_index integer NOT NULL,
+    partition_number integer NOT NULL,
+    sectors bytea NOT NULL,
+    faults bytea NOT NULL,
+    unproven bytea,
+    recoveries bytea NOT NULL,
+    terminated bytea NOT NULL,
+    expiration_epochs_root_cid bigint NOT NULL,
+    early_terminated_root_cid bigint NOT NULL,
+    live_power_pair_raw numeric NOT NULL,
+    live_power_pair_qa numeric NOT NULL,
+    unproven_power_pair_raw numeric,
+    unproven_power_pair_qa numeric,
+    faulty_power_pair_raw numeric NOT NULL,
+    faulty_power_pair_qa numeric NOT NULL,
+    recovering_power_pair_raw numeric NOT NULL,
+    recovering_power_pair_qa numeric NOT NULL,
     selector_suffix integer[] NOT NULL
 );
 
@@ -398,76 +449,10 @@ CREATE TABLE filecoin.miner_pre_committed_sector_infos (
 
 
 --
--- Name: miner_v0deadlines; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: miner_sector_infos; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.miner_v0deadlines (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    index integer NOT NULL,
-    partitions_root_cid bigint NOT NULL,
-    expiration_epochs_root_cid bigint NOT NULL,
-    post_submissions bytea NOT NULL,
-    early_terminations bytea NOT NULL,
-    live_sectors bigint NOT NULL,
-    total_sectors bigint NOT NULL,
-    faulty_power_pair_raw numeric NOT NULL,
-    faulty_power_pair_qa numeric NOT NULL
-);
-
-
---
--- Name: miner_v0infos; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v0infos (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    owner_id text NOT NULL,
-    worker_id text NOT NULL,
-    peer_id text,
-    control_addresses jsonb,
-    new_worker text,
-    new_worker_start_epoch bigint,
-    multi_addresses jsonb,
-    seal_proof_type integer NOT NULL,
-    sector_size bigint NOT NULL
-);
-
-
---
--- Name: miner_v0partitions; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v0partitions (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    deadline_index integer NOT NULL,
-    partition_number integer NOT NULL,
-    sectors bytea NOT NULL,
-    faults bytea NOT NULL,
-    recoveries bytea NOT NULL,
-    terminated bytea NOT NULL,
-    expiration_epochs_root_cid bigint NOT NULL,
-    early_terminated_root_cid bigint NOT NULL,
-    live_power_pair_raw numeric NOT NULL,
-    live_power_pair_qa numeric NOT NULL,
-    faulty_power_pair_raw numeric NOT NULL,
-    faulty_power_pair_qa numeric NOT NULL,
-    recovering_power_pair_raw numeric NOT NULL,
-    recovering_power_pair_qa numeric NOT NULL,
-    selector_suffix integer[] NOT NULL
-);
-
-
---
--- Name: miner_v0sector_infos; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v0sector_infos (
+CREATE TABLE filecoin.miner_sector_infos (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     miner_actor_id text NOT NULL,
@@ -482,102 +467,8 @@ CREATE TABLE filecoin.miner_v0sector_infos (
     initial_pledge numeric NOT NULL,
     expected_day_reward numeric NOT NULL,
     expected_storage_pledge numeric NOT NULL,
-    selector_suffix integer[] NOT NULL
-);
-
-
---
--- Name: miner_v2deadlines; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v2deadlines (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    index integer NOT NULL,
-    partitions_root_cid bigint NOT NULL,
-    expiration_epochs_root_cid bigint NOT NULL,
-    post_submissions bytea NOT NULL,
-    early_terminations bytea NOT NULL,
-    live_sectors bigint NOT NULL,
-    total_sectors bigint NOT NULL,
-    faulty_power_pair_raw numeric NOT NULL,
-    faulty_power_pair_qa numeric NOT NULL
-);
-
-
---
--- Name: miner_v2infos; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v2infos (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    owner_id text NOT NULL,
-    worker_id text NOT NULL,
-    peer_id text,
-    control_addresses jsonb,
-    new_worker text,
-    new_worker_start_epoch bigint,
-    multi_addresses jsonb,
-    seal_proof_type integer NOT NULL,
-    sector_size bigint NOT NULL,
-    consensus_faulted_elapsed bigint NOT NULL,
-    pending_owner text
-);
-
-
---
--- Name: miner_v2partitions; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v2partitions (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    deadline_index integer NOT NULL,
-    partition_number integer NOT NULL,
-    sectors bytea NOT NULL,
-    faults bytea NOT NULL,
-    unproven bytea NOT NULL,
-    recoveries bytea NOT NULL,
-    terminated bytea NOT NULL,
-    expiration_epochs_root_cid bigint NOT NULL,
-    early_terminated_root_cid bigint NOT NULL,
-    live_power_pair_raw numeric NOT NULL,
-    live_power_pair_qa numeric NOT NULL,
-    unproven_power_pair_raw numeric NOT NULL,
-    unproven_power_pair_qa numeric NOT NULL,
-    faulty_power_pair_raw numeric NOT NULL,
-    faulty_power_pair_qa numeric NOT NULL,
-    recovering_power_pair_raw numeric NOT NULL,
-    recovering_power_pair_qa numeric NOT NULL,
-    selector_suffix integer[] NOT NULL
-);
-
-
---
--- Name: miner_v2sector_infos; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.miner_v2sector_infos (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    miner_actor_id text NOT NULL,
-    sector_number bigint NOT NULL,
-    registered_seal_proof bigint NOT NULL,
-    sealed_cid bigint NOT NULL,
-    deal_ids bigint[] NOT NULL,
-    activation_epoch bigint NOT NULL,
-    expiration_epoch bigint NOT NULL,
-    deal_weight numeric NOT NULL,
-    verified_deal_weight numeric NOT NULL,
-    initial_pledge numeric NOT NULL,
-    expected_day_reward numeric NOT NULL,
-    expected_storage_pledge numeric NOT NULL,
-    replaced_sector_age bigint NOT NULL,
-    replaced_day_reward numeric NOT NULL,
+    replaced_sector_age bigint,
+    replaced_day_reward numeric,
     selector_suffix integer[] NOT NULL
 );
 
@@ -691,10 +582,10 @@ CREATE TABLE filecoin.receipts (
 
 
 --
--- Name: reward_actor_v0state; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: reward_actor_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.reward_actor_v0state (
+CREATE TABLE filecoin.reward_actor_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     reward_actor_id text NOT NULL,
@@ -706,29 +597,10 @@ CREATE TABLE filecoin.reward_actor_v0state (
     position_estimate numeric,
     velocity_estimate numeric,
     this_epoch_baseline_power numeric NOT NULL,
-    total_mined numeric NOT NULL
-);
-
-
---
--- Name: reward_actor_v2state; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.reward_actor_v2state (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    reward_actor_id text NOT NULL,
-    cumsum_baseline numeric NOT NULL,
-    cumsum_realized numeric NOT NULL,
-    effective_network_time bigint NOT NULL,
-    effective_baseline_power numeric NOT NULL,
-    this_epoch_reward numeric NOT NULL,
-    position_estimate numeric,
-    velocity_estimate numeric,
-    this_epoch_baseline_power numeric NOT NULL,
-    total_storage_power_reward numeric NOT NULL,
-    simple_total numeric NOT NULL,
-    baseline_total numeric NOT NULL
+    total_mined numeric,
+    total_storage_power_reward numeric,
+    simple_total numeric,
+    baseline_total numeric
 );
 
 
@@ -876,10 +748,10 @@ CREATE TABLE filecoin.storage_actor_state (
 
 
 --
--- Name: storage_power_actor_v0state; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.storage_power_actor_v0state (
+CREATE TABLE filecoin.storage_power_actor_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     storage_power_actor_id text NOT NULL,
@@ -897,36 +769,25 @@ CREATE TABLE filecoin.storage_power_actor_v0state (
     miner_above_min_number_count integer NOT NULL,
     cron_event_queue_root_cid bigint NOT NULL,
     first_cron_epoch bigint NOT NULL,
-    last_processed_cron_epoch bigint NOT NULL,
     claims_root_cid bigint NOT NULL,
+    last_processed_cron_epoch bigint,
     proof_validation_batch_root_cid bigint
 );
 
 
 --
--- Name: storage_power_actor_v2state; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: storage_power_claims; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.storage_power_actor_v2state (
+CREATE TABLE filecoin.storage_power_claims (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     storage_power_actor_id text NOT NULL,
-    total_raw_byte_power numeric NOT NULL,
-    total_bytes_committed numeric NOT NULL,
-    total_quality_adj_power numeric NOT NULL,
-    total_qa_bytes_committed numeric NOT NULL,
-    total_pledge_collateral numeric NOT NULL,
-    this_epoch_raw_byte_power numeric NOT NULL,
-    this_epoch_quality_adj_power numeric NOT NULL,
-    this_epoch_pledge_collateral numeric NOT NULL,
-    this_epoch_qa_power_smoothed_pos numeric,
-    this_epoch_qa_power_smoothed_vel numeric,
-    miner_count integer NOT NULL,
-    miner_above_min_number_count integer NOT NULL,
-    cron_event_queue_root_cid bigint NOT NULL,
-    first_cron_epoch bigint NOT NULL,
-    claims_root_cid bigint NOT NULL,
-    proof_validation_batch_root_cid bigint NOT NULL
+    address text NOT NULL,
+    seal_proof_type integer,
+    raw_byte_power numeric NOT NULL,
+    quality_adj_power numeric NOT NULL,
+    selector_suffix integer[] NOT NULL
 );
 
 
@@ -989,37 +850,6 @@ CREATE TABLE filecoin.storage_power_proof_validation_buckets (
     state_root_cid bigint NOT NULL,
     storage_power_actor_id text NOT NULL,
     address text NOT NULL
-);
-
-
---
--- Name: storage_power_v0claims; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.storage_power_v0claims (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    storage_power_actor_id text NOT NULL,
-    address text NOT NULL,
-    raw_byte_power numeric NOT NULL,
-    quality_adj_power numeric NOT NULL,
-    selector_suffix integer[] NOT NULL
-);
-
-
---
--- Name: storage_power_v2claims; Type: TABLE; Schema: filecoin; Owner: -
---
-
-CREATE TABLE filecoin.storage_power_v2claims (
-    height bigint NOT NULL,
-    state_root_cid bigint NOT NULL,
-    storage_power_actor_id text NOT NULL,
-    address text NOT NULL,
-    seal_proof_type integer NOT NULL,
-    raw_byte_power numeric NOT NULL,
-    quality_adj_power numeric NOT NULL,
-    selector_suffix integer[] NOT NULL
 );
 
 
@@ -1265,7 +1095,7 @@ ALTER TABLE ONLY filecoin.fevm_actor_state
 --
 
 ALTER TABLE ONLY filecoin.fevm_actor_storage
-    ADD CONSTRAINT fevm_actor_storage_pkey PRIMARY KEY (height, state_root_cid, state_account_id, storage_key);
+    ADD CONSTRAINT fevm_actor_storage_pkey PRIMARY KEY (height, state_root_cid, state_account_id, storage_id);
 
 
 --
@@ -1301,19 +1131,27 @@ ALTER TABLE ONLY filecoin.messages
 
 
 --
--- Name: miner_actor_v0state miner_actor_v0state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_actor_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_actor_v0state_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_actor_state_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
 
 
 --
--- Name: miner_actor_v2state miner_actor_v2state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_deadlines miner_deadlines_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_actor_v2state_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_deadlines
+    ADD CONSTRAINT miner_deadlines_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, index);
+
+
+--
+-- Name: miner_infos miner_infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.miner_infos
+    ADD CONSTRAINT miner_infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
 
 
 --
@@ -1325,6 +1163,14 @@ ALTER TABLE ONLY filecoin.miner_partition_expirations
 
 
 --
+-- Name: miner_partitions miner_partitions_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+--
+
+ALTER TABLE ONLY filecoin.miner_partitions
+    ADD CONSTRAINT miner_partitions_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number);
+
+
+--
 -- Name: miner_pre_committed_sector_infos miner_pre_committed_sector_infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
@@ -1333,67 +1179,11 @@ ALTER TABLE ONLY filecoin.miner_pre_committed_sector_infos
 
 
 --
--- Name: miner_v0deadlines miner_v0deadlines_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_sector_infos miner_sector_infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0deadlines
-    ADD CONSTRAINT miner_v0deadlines_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, index);
-
-
---
--- Name: miner_v0infos miner_v0infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v0infos
-    ADD CONSTRAINT miner_v0infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
-
-
---
--- Name: miner_v0partitions miner_v0partitions_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v0partitions
-    ADD CONSTRAINT miner_v0partitions_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number);
-
-
---
--- Name: miner_v0sector_infos miner_v0sector_infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v0sector_infos
-    ADD CONSTRAINT miner_v0sector_infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number);
-
-
---
--- Name: miner_v2deadlines miner_v2deadlines_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2deadlines
-    ADD CONSTRAINT miner_v2deadlines_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, index);
-
-
---
--- Name: miner_v2infos miner_v2infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2infos
-    ADD CONSTRAINT miner_v2infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id);
-
-
---
--- Name: miner_v2partitions miner_v2partitions_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2partitions
-    ADD CONSTRAINT miner_v2partitions_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number);
-
-
---
--- Name: miner_v2sector_infos miner_v2sector_infos_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2sector_infos
-    ADD CONSTRAINT miner_v2sector_infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number);
+ALTER TABLE ONLY filecoin.miner_sector_infos
+    ADD CONSTRAINT miner_sector_infos_pkey PRIMARY KEY (height, state_root_cid, miner_actor_id, sector_number);
 
 
 --
@@ -1453,19 +1243,11 @@ ALTER TABLE ONLY filecoin.receipts
 
 
 --
--- Name: reward_actor_v0state reward_actor_v0state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: reward_actor_state reward_actor_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.reward_actor_v0state
-    ADD CONSTRAINT reward_actor_v0state_pkey PRIMARY KEY (height, state_root_cid, reward_actor_id);
-
-
---
--- Name: reward_actor_v2state reward_actor_v2state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.reward_actor_v2state
-    ADD CONSTRAINT reward_actor_v2state_pkey PRIMARY KEY (height, state_root_cid, reward_actor_id);
+ALTER TABLE ONLY filecoin.reward_actor_state
+    ADD CONSTRAINT reward_actor_state_pkey PRIMARY KEY (height, state_root_cid, reward_actor_id);
 
 
 --
@@ -1533,19 +1315,19 @@ ALTER TABLE ONLY filecoin.storage_actor_state
 
 
 --
--- Name: storage_power_actor_v0state storage_power_actor_v0state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state storage_power_actor_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT storage_power_actor_v0state_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT storage_power_actor_state_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id);
 
 
 --
--- Name: storage_power_actor_v2state storage_power_actor_v2state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_claims storage_power_claims_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT storage_power_actor_v2state_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id);
+ALTER TABLE ONLY filecoin.storage_power_claims
+    ADD CONSTRAINT storage_power_claims_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address);
 
 
 --
@@ -1578,22 +1360,6 @@ ALTER TABLE ONLY filecoin.storage_power_proof_seal_verify_infos
 
 ALTER TABLE ONLY filecoin.storage_power_proof_validation_buckets
     ADD CONSTRAINT storage_power_proof_validation_buckets_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address);
-
-
---
--- Name: storage_power_v0claims storage_power_v0claims_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_v0claims
-    ADD CONSTRAINT storage_power_v0claims_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address);
-
-
---
--- Name: storage_power_v2claims storage_power_v2claims_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_v2claims
-    ADD CONSTRAINT storage_power_v2claims_pkey PRIMARY KEY (height, state_root_cid, storage_power_actor_id, address);
 
 
 --
@@ -1781,11 +1547,11 @@ ALTER TABLE ONLY filecoin.block_messages
 
 
 --
--- Name: storage_power_cron_event_buckets cron_bs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_cron_event_buckets cron_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.storage_power_cron_event_buckets
-    ADD CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state(height, state_root_cid, storage_power_actor_id);
+    ADD CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_state(height, state_root_cid, storage_power_actor_id);
 
 
 --
@@ -1917,11 +1683,11 @@ ALTER TABLE ONLY filecoin.miner_partition_expirations
 
 
 --
--- Name: miner_partition_expirations exps_height_state_root_cid_m_actor_id_dl_index_p_num_v0ps_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_partition_expirations exps_height_state_root_cid_m_actor_id_dl_index_p_num_ps_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.miner_partition_expirations
-    ADD CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_v0ps_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number) REFERENCES filecoin.miner_v0partitions(height, state_root_cid, miner_actor_id, deadline_index, partition_number);
+    ADD CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_ps_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number) REFERENCES filecoin.miner_partitions(height, state_root_cid, miner_actor_id, deadline_index, partition_number);
 
 
 --
@@ -2093,67 +1859,35 @@ ALTER TABLE ONLY filecoin.storage_actor_locked_tokens
 
 
 --
--- Name: miner_v0partitions m_v0parts_height_state_root_cid_m_actor_id_dl_index_v0dls_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_partitions m_parts_height_state_root_cid_m_actor_id_dl_index_dls_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0partitions
-    ADD CONSTRAINT m_v0parts_height_state_root_cid_m_actor_id_dl_index_v0dls_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index) REFERENCES filecoin.miner_v0deadlines(height, state_root_cid, miner_actor_id, index);
-
-
---
--- Name: miner_v0sector_infos m_v0sec_infos_height_sealed_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v0sector_infos
-    ADD CONSTRAINT m_v0sec_infos_height_sealed_cid_ipld_blocks_fkey FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_partitions
+    ADD CONSTRAINT m_parts_height_state_root_cid_m_actor_id_dl_index_dls_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index) REFERENCES filecoin.miner_deadlines(height, state_root_cid, miner_actor_id, index);
 
 
 --
--- Name: miner_v0sector_infos m_v0sec_infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_sector_infos m_sec_infos_height_sealed_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0sector_infos
-    ADD CONSTRAINT m_v0sec_infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v0sector_infos m_v0sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v0sector_infos
-    ADD CONSTRAINT m_v0sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0state(height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_sector_infos
+    ADD CONSTRAINT m_sec_infos_height_sealed_cid_ipld_blocks_fkey FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v2partitions m_v2parts_height_state_root_cid_m_actor_id_dl_index_v2dls_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_sector_infos m_sec_infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v2partitions
-    ADD CONSTRAINT m_v2parts_height_state_root_cid_m_actor_id_dl_index_v2dls_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index) REFERENCES filecoin.miner_v2deadlines(height, state_root_cid, miner_actor_id, index);
-
-
---
--- Name: miner_v2sector_infos m_v2sec_infos_height_sealed_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2sector_infos
-    ADD CONSTRAINT m_v2sec_infos_height_sealed_cid_ipld_blocks_fkey FOREIGN KEY (height, sealed_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_sector_infos
+    ADD CONSTRAINT m_sec_infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v2sector_infos m_v2sec_infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_sector_infos m_sec_infos_height_state_root_cid_miner_actor_id_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v2sector_infos
-    ADD CONSTRAINT m_v2sec_infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2sector_infos m_v2sec_infos_height_state_root_cid_miner_actor_id_v2state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2sector_infos
-    ADD CONSTRAINT m_v2sec_infos_height_state_root_cid_miner_actor_id_v2state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2state(height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_sector_infos
+    ADD CONSTRAINT m_sec_infos_height_state_root_cid_miner_actor_id_state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_state(height, state_root_cid, miner_actor_id);
 
 
 --
@@ -2197,275 +1931,139 @@ ALTER TABLE ONLY filecoin.cron_actor_method_receivers
 
 
 --
--- Name: miner_v0deadlines miner_v0deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_deadlines miner_deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0deadlines
-    ADD CONSTRAINT miner_v0deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_deadlines
+    ADD CONSTRAINT miner_deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0deadlines miner_v0deadlines_height_partitions_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_deadlines miner_deadlines_height_partitions_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0deadlines
-    ADD CONSTRAINT miner_v0deadlines_height_partitions_root_cid_ipld_blocks_fkey FOREIGN KEY (height, partitions_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_deadlines
+    ADD CONSTRAINT miner_deadlines_height_partitions_root_cid_ipld_blocks_fkey FOREIGN KEY (height, partitions_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0deadlines miner_v0deadlines_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_deadlines miner_deadlines_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0deadlines
-    ADD CONSTRAINT miner_v0deadlines_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_deadlines
+    ADD CONSTRAINT miner_deadlines_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0deadlines miner_v0dls_height_state_root_cid_miner_actor_id_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_deadlines miner_dls_height_state_root_cid_miner_actor_id_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0deadlines
-    ADD CONSTRAINT miner_v0dls_height_state_root_cid_miner_actor_id_v0state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0state(height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_deadlines
+    ADD CONSTRAINT miner_dls_height_state_root_cid_miner_actor_id_state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_state(height, state_root_cid, miner_actor_id);
 
 
 --
--- Name: miner_v0infos miner_v0infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_infos miner_infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0infos
-    ADD CONSTRAINT miner_v0infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_infos
+    ADD CONSTRAINT miner_infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0infos miner_v0infos_height_state_root_cid_miner_actor_id_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_infos miner_infos_height_state_root_cid_miner_actor_id_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0infos
-    ADD CONSTRAINT miner_v0infos_height_state_root_cid_miner_actor_id_v0state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0state(height, state_root_cid, miner_actor_id);
+ALTER TABLE ONLY filecoin.miner_infos
+    ADD CONSTRAINT miner_infos_height_state_root_cid_miner_actor_id_state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_state(height, state_root_cid, miner_actor_id);
 
 
 --
--- Name: miner_v0partitions miner_v0parts_height_early_term_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_partitions miner_parts_height_early_term_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0partitions
-    ADD CONSTRAINT miner_v0parts_height_early_term_root_cid_ipld_blocks_fkey FOREIGN KEY (height, early_terminated_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_partitions
+    ADD CONSTRAINT miner_parts_height_early_term_root_cid_ipld_blocks_fkey FOREIGN KEY (height, early_terminated_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0partitions miner_v0parts_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_partitions miner_parts_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0partitions
-    ADD CONSTRAINT miner_v0parts_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_partitions
+    ADD CONSTRAINT miner_parts_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_v0partitions miner_v0parts_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_partitions miner_parts_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_v0partitions
-    ADD CONSTRAINT miner_v0parts_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_partitions
+    ADD CONSTRAINT miner_parts_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_allocated_sectors_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_allocated_sectors_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_allocated_sectors_cid_ipld_blocks_fkey FOREIGN KEY (height, allocated_sectors_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_allocated_sectors_cid_ipld_blocks_fkey FOREIGN KEY (height, allocated_sectors_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_deadlines_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_deadlines_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_deadlines_cid_ipld_blocks_fkey FOREIGN KEY (height, deadlines_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_deadlines_cid_ipld_blocks_fkey FOREIGN KEY (height, deadlines_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_pre_com_sec_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_pre_com_sec_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_pre_com_sec_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_pre_com_sec_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_sectors_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_sectors_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_sectors_root_cid_ipld_blocks_fkey FOREIGN KEY (height, sectors_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_sectors_root_cid_ipld_blocks_fkey FOREIGN KEY (height, sectors_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_state_root_cid_miner_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_state_root_cid_miner_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_state_root_cid_miner_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_state_root_cid_miner_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
 
 
 --
--- Name: miner_actor_v0state miner_v0state_height_vesting_funds_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_actor_state miner_state_height_vesting_funds_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.miner_actor_v0state
-    ADD CONSTRAINT miner_v0state_height_vesting_funds_cid_ipld_blocks_fkey FOREIGN KEY (height, vesting_funds_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2deadlines miner_v2deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2deadlines
-    ADD CONSTRAINT miner_v2deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2deadlines miner_v2deadlines_height_partitions_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2deadlines
-    ADD CONSTRAINT miner_v2deadlines_height_partitions_root_cid_ipld_blocks_fkey FOREIGN KEY (height, partitions_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2deadlines miner_v2deadlines_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2deadlines
-    ADD CONSTRAINT miner_v2deadlines_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2deadlines miner_v2dls_height_state_root_cid_miner_actor_id_v2state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2deadlines
-    ADD CONSTRAINT miner_v2dls_height_state_root_cid_miner_actor_id_v2state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2state(height, state_root_cid, miner_actor_id);
-
-
---
--- Name: miner_v2infos miner_v2infos_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2infos
-    ADD CONSTRAINT miner_v2infos_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2infos miner_v2infos_height_state_root_cid_miner_actor_id_v2state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2infos
-    ADD CONSTRAINT miner_v2infos_height_state_root_cid_miner_actor_id_v2state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v2state(height, state_root_cid, miner_actor_id);
-
-
---
--- Name: miner_v2partitions miner_v2parts_height_early_term_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2partitions
-    ADD CONSTRAINT miner_v2parts_height_early_term_root_cid_ipld_blocks_fkey FOREIGN KEY (height, early_terminated_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2partitions miner_v2parts_height_exp_epochs_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2partitions
-    ADD CONSTRAINT miner_v2parts_height_exp_epochs_root_cid_ipld_blocks_fkey FOREIGN KEY (height, expiration_epochs_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_v2partitions miner_v2parts_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_v2partitions
-    ADD CONSTRAINT miner_v2parts_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_allocated_sectors_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_allocated_sectors_cid_ipld_blocks_fkey FOREIGN KEY (height, allocated_sectors_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_deadlines_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_deadlines_cid_ipld_blocks_fkey FOREIGN KEY (height, deadlines_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_pre_com_sec_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_pre_com_sec_root_cid_ipld_blocks_fkey FOREIGN KEY (height, pre_committed_sectors_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_sectors_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_sectors_root_cid_ipld_blocks_fkey FOREIGN KEY (height, sectors_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_state_root_cid_miner_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_state_root_cid_miner_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
-
-
---
--- Name: miner_actor_v2state miner_v2state_height_vesting_funds_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.miner_actor_v2state
-    ADD CONSTRAINT miner_v2state_height_vesting_funds_cid_ipld_blocks_fkey FOREIGN KEY (height, vesting_funds_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.miner_actor_state
+    ADD CONSTRAINT miner_state_height_vesting_funds_cid_ipld_blocks_fkey FOREIGN KEY (height, vesting_funds_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
@@ -2653,115 +2251,59 @@ ALTER TABLE ONLY filecoin.storage_actor_pending_proposals
 
 
 --
--- Name: storage_power_v0claims pow_v0claims_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_claims pow_claims_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_v0claims
-    ADD CONSTRAINT pow_v0claims_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_v0claims pow_v0cs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_v0claims
-    ADD CONSTRAINT pow_v0cs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state(height, state_root_cid, storage_power_actor_id);
+ALTER TABLE ONLY filecoin.storage_power_claims
+    ADD CONSTRAINT pow_claims_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_power_v2claims pow_v2claims_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_claims pow_cs_height_state_root_cid_s_pow_actor_id_pow_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_v2claims
-    ADD CONSTRAINT pow_v2claims_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_v2claims pow_v2cs_height_state_root_cid_s_pow_actor_id_pow_v2state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_v2claims
-    ADD CONSTRAINT pow_v2cs_height_state_root_cid_s_pow_actor_id_pow_v2state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v2state(height, state_root_cid, storage_power_actor_id);
+ALTER TABLE ONLY filecoin.storage_power_claims
+    ADD CONSTRAINT pow_cs_height_state_root_cid_s_pow_actor_id_pow_state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_state(height, state_root_cid, storage_power_actor_id);
 
 
 --
--- Name: storage_power_actor_v0state power_v0state_height_claims_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state power_state_height_claims_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT power_v0state_height_claims_root_cid_ipld_blocks_fkey FOREIGN KEY (height, claims_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_actor_v0state power_v0state_height_cron_event_queue_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT power_v0state_height_cron_event_queue_root_cid_ipld_blocks_fkey FOREIGN KEY (height, cron_event_queue_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT power_state_height_claims_root_cid_ipld_blocks_fkey FOREIGN KEY (height, claims_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_power_actor_v0state power_v0state_height_proof_val_batch_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state power_state_height_cron_event_queue_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT power_v0state_height_proof_val_batch_root_cid_ipld_blocks_fkey FOREIGN KEY (height, proof_validation_batch_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_actor_v0state power_v0state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT power_v0state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT power_state_height_cron_event_queue_root_cid_ipld_blocks_fkey FOREIGN KEY (height, cron_event_queue_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_power_actor_v0state power_v0state_height_state_root_cid_s_pow_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state power_state_height_proof_val_batch_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v0state
-    ADD CONSTRAINT power_v0state_height_state_root_cid_s_pow_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
-
-
---
--- Name: storage_power_actor_v2state power_v2state_height_claims_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT power_v2state_height_claims_root_cid_ipld_blocks_fkey FOREIGN KEY (height, claims_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT power_state_height_proof_val_batch_root_cid_ipld_blocks_fkey FOREIGN KEY (height, proof_validation_batch_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_power_actor_v2state power_v2state_height_cron_event_queue_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state power_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT power_v2state_height_cron_event_queue_root_cid_ipld_blocks_fkey FOREIGN KEY (height, cron_event_queue_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_actor_v2state power_v2state_height_proof_val_batch_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT power_v2state_height_proof_val_batch_root_cid_ipld_blocks_fkey FOREIGN KEY (height, proof_validation_batch_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT power_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_power_actor_v2state power_v2state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_power_actor_state power_state_height_state_root_cid_s_pow_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT power_v2state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: storage_power_actor_v2state power_v2state_height_state_root_cid_s_pow_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.storage_power_actor_v2state
-    ADD CONSTRAINT power_v2state_height_state_root_cid_s_pow_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
+ALTER TABLE ONLY filecoin.storage_power_actor_state
+    ADD CONSTRAINT power_state_height_state_root_cid_s_pow_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
 
 
 --
@@ -2781,11 +2323,11 @@ ALTER TABLE ONLY filecoin.miner_pre_committed_sector_infos
 
 
 --
--- Name: miner_pre_committed_sector_infos pre_sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_pre_committed_sector_infos pre_sec_infos_height_state_root_cid_miner_actor_id_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.miner_pre_committed_sector_infos
-    ADD CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0state(height, state_root_cid, miner_actor_id);
+    ADD CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_state(height, state_root_cid, miner_actor_id);
 
 
 --
@@ -2793,7 +2335,7 @@ ALTER TABLE ONLY filecoin.miner_pre_committed_sector_infos
 --
 
 ALTER TABLE ONLY filecoin.storage_power_proof_validation_buckets
-    ADD CONSTRAINT proof_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_v0state(height, state_root_cid, storage_power_actor_id);
+    ADD CONSTRAINT proof_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey FOREIGN KEY (height, state_root_cid, storage_power_actor_id) REFERENCES filecoin.storage_power_actor_state(height, state_root_cid, storage_power_actor_id);
 
 
 --
@@ -2877,35 +2419,19 @@ ALTER TABLE ONLY filecoin.verified_registry_clients
 
 
 --
--- Name: reward_actor_v0state reward_v0state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: reward_actor_state reward_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.reward_actor_v0state
-    ADD CONSTRAINT reward_v0state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
-
-
---
--- Name: reward_actor_v2state reward_v2state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.reward_actor_v2state
-    ADD CONSTRAINT reward_v2state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.reward_actor_state
+    ADD CONSTRAINT reward_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: reward_actor_v0state rwrd_v0state_height_state_root_cid_reward_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: reward_actor_state rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.reward_actor_v0state
-    ADD CONSTRAINT rwrd_v0state_height_state_root_cid_reward_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, reward_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
-
-
---
--- Name: reward_actor_v2state rwrd_v2state_height_state_root_cid_reward_actor_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
---
-
-ALTER TABLE ONLY filecoin.reward_actor_v2state
-    ADD CONSTRAINT rwrd_v2state_height_state_root_cid_reward_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, reward_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
+ALTER TABLE ONLY filecoin.reward_actor_state
+    ADD CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey FOREIGN KEY (height, state_root_cid, reward_actor_id) REFERENCES filecoin.actors(height, state_root_cid, id);
 
 
 --
@@ -3069,11 +2595,11 @@ ALTER TABLE ONLY filecoin.miner_vesting_funds
 
 
 --
--- Name: miner_vesting_funds vesting_funds_height_state_root_cid_miner_actor_id_v0state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: miner_vesting_funds vesting_funds_height_state_root_cid_miner_actor_id_state_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.miner_vesting_funds
-    ADD CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_v0state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_v0state(height, state_root_cid, miner_actor_id);
+    ADD CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_state_fkey FOREIGN KEY (height, state_root_cid, miner_actor_id) REFERENCES filecoin.miner_actor_state(height, state_root_cid, miner_actor_id);
 
 
 --
