@@ -257,23 +257,13 @@ ADD CONSTRAINT method_rcvrs_height_state_root_cid_cron_actor_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, cron_actor_id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
-ALTER TABLE filecoin.reward_actor_v0state
-ADD CONSTRAINT reward_v0state_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.reward_actor_state
+ADD CONSTRAINT reward_state_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.reward_actor_v0state
-ADD CONSTRAINT rwrd_v0state_height_state_root_cid_reward_actor_id_actors_fkey
-FOREIGN KEY (height, state_root_cid, reward_actor_id)
-REFERENCES filecoin.actors (height, state_root_cid, id);
-
-ALTER TABLE filecoin.reward_actor_v2state
-ADD CONSTRAINT reward_v2state_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.reward_actor_v2state
-ADD CONSTRAINT rwrd_v2state_height_state_root_cid_reward_actor_id_actors_fkey
+ALTER TABLE filecoin.reward_actor_state
+ADD CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, reward_actor_id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
@@ -417,105 +407,55 @@ ADD CONSTRAINT ops_height_state_root_cid_storage_actor_id_epoch_deal_bkts_fkey
 FOREIGN KEY (height, state_root_cid, storage_actor_id, epoch)
 REFERENCES filecoin.storage_actor_deal_ops_buckets (height, state_root_cid, storage_actor_id, epoch);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_vesting_funds_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_vesting_funds_cid_ipld_blocks_fkey
 FOREIGN KEY (height, vesting_funds_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_pre_com_sec_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_pre_com_sec_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, pre_committed_sectors_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_allocated_sectors_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_allocated_sectors_cid_ipld_blocks_fkey
 FOREIGN KEY (height, allocated_sectors_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_sectors_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_sectors_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, sectors_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_deadlines_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_deadlines_cid_ipld_blocks_fkey
 FOREIGN KEY (height, deadlines_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v0state
-ADD CONSTRAINT miner_v0state_height_state_root_cid_miner_actor_id_actors_fkey
+ALTER TABLE filecoin.miner_actor_state
+ADD CONSTRAINT miner_state_height_state_root_cid_miner_actor_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_infos
+ADD CONSTRAINT miner_infos_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_vesting_funds_cid_ipld_blocks_fkey
-FOREIGN KEY (height, vesting_funds_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_pre_com_sec_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, pre_committed_sectors_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, pre_committed_sectors_expiry_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_allocated_sectors_cid_ipld_blocks_fkey
-FOREIGN KEY (height, allocated_sectors_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_sectors_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, sectors_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_deadlines_cid_ipld_blocks_fkey
-FOREIGN KEY (height, deadlines_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_actor_v2state
-ADD CONSTRAINT miner_v2state_height_state_root_cid_miner_actor_id_actors_fkey
+ALTER TABLE filecoin.miner_infos
+ADD CONSTRAINT miner_infos_height_state_root_cid_miner_actor_id_state_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.actors (height, state_root_cid, id);
-
-ALTER TABLE filecoin.miner_v0infos
-ADD CONSTRAINT miner_v0infos_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v0infos
-ADD CONSTRAINT miner_v0infos_height_state_root_cid_miner_actor_id_v0state_fkey
-FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v0state (height, state_root_cid, miner_actor_id);
-
-ALTER TABLE filecoin.miner_v2infos
-ADD CONSTRAINT miner_v2infos_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2infos
-ADD CONSTRAINT miner_v2infos_height_state_root_cid_miner_actor_id_v2state_fkey
-FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v2state (height, state_root_cid, miner_actor_id);
+REFERENCES filecoin.miner_actor_state (height, state_root_cid, miner_actor_id);
 
 ALTER TABLE filecoin.miner_vesting_funds
 ADD CONSTRAINT vesting_funds_height_state_root_cid_ipld_blocks_fkey
@@ -523,49 +463,29 @@ FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.miner_vesting_funds
-ADD CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_v0state_fkey
+ADD CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_state_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v0state (height, state_root_cid, miner_actor_id);
+REFERENCES filecoin.miner_actor_state (height, state_root_cid, miner_actor_id);
 
-ALTER TABLE filecoin.miner_v0deadlines
-ADD CONSTRAINT miner_v0deadlines_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_deadlines
+ADD CONSTRAINT miner_deadlines_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0deadlines
-ADD CONSTRAINT miner_v0deadlines_height_partitions_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_deadlines
+ADD CONSTRAINT miner_deadlines_height_partitions_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, partitions_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0deadlines
-ADD CONSTRAINT miner_v0deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_deadlines
+ADD CONSTRAINT miner_deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, expiration_epochs_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0deadlines
-ADD CONSTRAINT miner_v0dls_height_state_root_cid_miner_actor_id_v0state_fkey
+ALTER TABLE filecoin.miner_deadlines
+ADD CONSTRAINT miner_dls_height_state_root_cid_miner_actor_id_state_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v0state (height, state_root_cid, miner_actor_id);
-
-ALTER TABLE filecoin.miner_v2deadlines
-ADD CONSTRAINT miner_v2deadlines_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2deadlines
-ADD CONSTRAINT miner_v2deadlines_height_partitions_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, partitions_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2deadlines
-ADD CONSTRAINT miner_v2deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, expiration_epochs_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2deadlines
-ADD CONSTRAINT miner_v2dls_height_state_root_cid_miner_actor_id_v2state_fkey
-FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v2state (height, state_root_cid, miner_actor_id);
+REFERENCES filecoin.miner_actor_state (height, state_root_cid, miner_actor_id);
 
 ALTER TABLE filecoin.miner_pre_committed_sector_infos
 ADD CONSTRAINT pre_sec_infos_height_state_root_cid_ipld_blocks_fkey
@@ -578,79 +498,44 @@ FOREIGN KEY (height, sealed_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.miner_pre_committed_sector_infos
-ADD CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey
+ADD CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_state_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v0state (height, state_root_cid, miner_actor_id);
+REFERENCES filecoin.miner_actor_state (height, state_root_cid, miner_actor_id);
 
-ALTER TABLE filecoin.miner_v0sector_infos
-ADD CONSTRAINT m_v0sec_infos_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_sector_infos
+ADD CONSTRAINT m_sec_infos_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0sector_infos
-ADD CONSTRAINT m_v0sec_infos_height_sealed_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_sector_infos
+ADD CONSTRAINT m_sec_infos_height_sealed_cid_ipld_blocks_fkey
 FOREIGN KEY (height, sealed_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0sector_infos
-ADD CONSTRAINT m_v0sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey
+ALTER TABLE filecoin.miner_sector_infos
+ADD CONSTRAINT m_sec_infos_height_state_root_cid_miner_actor_id_state_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v0state (height, state_root_cid, miner_actor_id);
+REFERENCES filecoin.miner_actor_state (height, state_root_cid, miner_actor_id);
 
-ALTER TABLE filecoin.miner_v2sector_infos
-ADD CONSTRAINT m_v2sec_infos_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_partitions
+ADD CONSTRAINT miner_parts_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v2sector_infos
-ADD CONSTRAINT m_v2sec_infos_height_sealed_cid_ipld_blocks_fkey
-FOREIGN KEY (height, sealed_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2sector_infos
-ADD CONSTRAINT m_v2sec_infos_height_state_root_cid_miner_actor_id_v2state_fkey
-FOREIGN KEY (height, state_root_cid, miner_actor_id)
-REFERENCES filecoin.miner_actor_v2state (height, state_root_cid, miner_actor_id);
-
-ALTER TABLE filecoin.miner_v0partitions
-ADD CONSTRAINT miner_v0parts_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v0partitions
-ADD CONSTRAINT miner_v0parts_height_exp_epochs_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_partitions
+ADD CONSTRAINT miner_parts_height_exp_epochs_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, expiration_epochs_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0partitions
-ADD CONSTRAINT miner_v0parts_height_early_term_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.miner_partitions
+ADD CONSTRAINT miner_parts_height_early_term_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, early_terminated_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.miner_v0partitions
-ADD CONSTRAINT m_v0parts_height_state_root_cid_m_actor_id_dl_index_v0dls_fkey
+ALTER TABLE filecoin.miner_partitions
+ADD CONSTRAINT m_parts_height_state_root_cid_m_actor_id_dl_index_dls_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index)
-REFERENCES filecoin.miner_v0deadlines (height, state_root_cid, miner_actor_id, index);
-
-ALTER TABLE filecoin.miner_v2partitions
-ADD CONSTRAINT miner_v2parts_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2partitions
-ADD CONSTRAINT miner_v2parts_height_exp_epochs_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, expiration_epochs_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2partitions
-ADD CONSTRAINT miner_v2parts_height_early_term_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, early_terminated_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.miner_v2partitions
-ADD CONSTRAINT m_v2parts_height_state_root_cid_m_actor_id_dl_index_v2dls_fkey
-FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index)
-REFERENCES filecoin.miner_v2deadlines (height, state_root_cid, miner_actor_id, index);
+REFERENCES filecoin.miner_deadlines (height, state_root_cid, miner_actor_id, index);
 
 ALTER TABLE filecoin.miner_partition_expirations
 ADD CONSTRAINT exps_height_state_root_cid_ipld_blocks_fkey
@@ -658,9 +543,9 @@ FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.miner_partition_expirations
-ADD CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_v0ps_fkey
+ADD CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_ps_fkey
 FOREIGN KEY (height, state_root_cid, miner_actor_id, deadline_index, partition_number)
-REFERENCES filecoin.miner_v0partitions (height, state_root_cid, miner_actor_id, deadline_index, partition_number);
+REFERENCES filecoin.miner_partitions (height, state_root_cid, miner_actor_id, deadline_index, partition_number);
 
 ALTER TABLE filecoin.multisig_actor_state
 ADD CONSTRAINT msig_state_height_state_root_cid_ipld_blocks_fkey
@@ -712,53 +597,28 @@ ADD CONSTRAINT pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey
 FOREIGN KEY (height, state_root_cid, payment_channel_actor_id)
 REFERENCES filecoin.payment_channel_actor_state (height, state_root_cid, payment_channel_actor_id);
 
-ALTER TABLE filecoin.storage_power_actor_v0state
-ADD CONSTRAINT power_v0state_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_power_actor_state
+ADD CONSTRAINT power_state_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_power_actor_v0state
-ADD CONSTRAINT power_v0state_height_cron_event_queue_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_power_actor_state
+ADD CONSTRAINT power_state_height_cron_event_queue_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, cron_event_queue_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_power_actor_v0state
-ADD CONSTRAINT power_v0state_height_claims_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_power_actor_state
+ADD CONSTRAINT power_state_height_claims_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, claims_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_power_actor_v0state
-ADD CONSTRAINT power_v0state_height_proof_val_batch_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_power_actor_state
+ADD CONSTRAINT power_state_height_proof_val_batch_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, proof_validation_batch_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_power_actor_v0state
-ADD CONSTRAINT power_v0state_height_state_root_cid_s_pow_actor_id_actors_fkey
-FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
-REFERENCES filecoin.actors (height, state_root_cid, id);
-
-ALTER TABLE filecoin.storage_power_actor_v2state
-ADD CONSTRAINT power_v2state_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.storage_power_actor_v2state
-ADD CONSTRAINT power_v2state_height_cron_event_queue_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, cron_event_queue_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.storage_power_actor_v2state
-ADD CONSTRAINT power_v2state_height_claims_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, claims_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.storage_power_actor_v2state
-ADD CONSTRAINT power_v2state_height_proof_val_batch_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, proof_validation_batch_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.storage_power_actor_v2state
-ADD CONSTRAINT power_v2state_height_state_root_cid_s_pow_actor_id_actors_fkey
+ALTER TABLE filecoin.storage_power_actor_state
+ADD CONSTRAINT power_state_height_state_root_cid_s_pow_actor_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
@@ -768,9 +628,9 @@ FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.storage_power_cron_event_buckets
-ADD CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey
+ADD CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey
 FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
-REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id);
+REFERENCES filecoin.storage_power_actor_state (height, state_root_cid, storage_power_actor_id);
 
 ALTER TABLE filecoin.storage_power_cron_events
 ADD CONSTRAINT cron_events_height_state_root_cid_ipld_blocks_fkey
@@ -782,25 +642,15 @@ ADD CONSTRAINT cron_es_height_state_root_cid_s_pow_actor_id_epoch_cron_bs_fkey
 FOREIGN KEY (height, state_root_cid, storage_power_actor_id, epoch)
 REFERENCES filecoin.storage_power_cron_event_buckets (height, state_root_cid, storage_power_actor_id, epoch);
 
-ALTER TABLE filecoin.storage_power_v0claims
-ADD CONSTRAINT pow_v0claims_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_power_claims
+ADD CONSTRAINT pow_claims_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_power_v0claims
-ADD CONSTRAINT pow_v0cs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey
+ALTER TABLE filecoin.storage_power_claims
+ADD CONSTRAINT pow_cs_height_state_root_cid_s_pow_actor_id_pow_state_fkey
 FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
-REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id);
-
-ALTER TABLE filecoin.storage_power_v2claims
-ADD CONSTRAINT pow_v2claims_height_state_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, state_root_cid)
-REFERENCES ipld.blocks (height, key);
-
-ALTER TABLE filecoin.storage_power_v2claims
-ADD CONSTRAINT pow_v2cs_height_state_root_cid_s_pow_actor_id_pow_v2state_fkey
-FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
-REFERENCES filecoin.storage_power_actor_v2state (height, state_root_cid, storage_power_actor_id);
+REFERENCES filecoin.storage_power_actor_state (height, state_root_cid, storage_power_actor_id);
 
 ALTER TABLE filecoin.storage_power_proof_validation_buckets
 ADD CONSTRAINT proof_buckets_height_state_root_cid_ipld_blocks_fkey
@@ -810,7 +660,7 @@ REFERENCES ipld.blocks (height, key);
 ALTER TABLE filecoin.storage_power_proof_validation_buckets
 ADD CONSTRAINT proof_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey
 FOREIGN KEY (height, state_root_cid, storage_power_actor_id)
-REFERENCES filecoin.storage_power_actor_v0state (height, state_root_cid, storage_power_actor_id);
+REFERENCES filecoin.storage_power_actor_state (height, state_root_cid, storage_power_actor_id);
 
 ALTER TABLE filecoin.storage_power_proof_seal_verify_infos
 ADD CONSTRAINT proofs_height_state_root_cid_ipld_blocks_fkey
@@ -964,17 +814,11 @@ DROP CONSTRAINT proof_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey;
 ALTER TABLE filecoin.storage_power_proof_validation_buckets
 DROP CONSTRAINT proof_buckets_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_power_v2claims
-DROP CONSTRAINT pow_v2cs_height_state_root_cid_s_pow_actor_id_pow_v2state_fkey;
+ALTER TABLE filecoin.storage_power_claims
+DROP CONSTRAINT pow_cs_height_state_root_cid_s_pow_actor_id_pow_state_fkey;
 
-ALTER TABLE filecoin.storage_power_v2claims
-DROP CONSTRAINT pow_v2claims_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.storage_power_v0claims
-DROP CONSTRAINT pow_v0cs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey;
-
-ALTER TABLE filecoin.storage_power_v0claims
-DROP CONSTRAINT pow_v0claims_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_power_claims
+DROP CONSTRAINT pow_claims_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_power_cron_events
 DROP CONSTRAINT cron_es_height_state_root_cid_s_pow_actor_id_epoch_cron_bs_fkey;
@@ -983,40 +827,25 @@ ALTER TABLE filecoin.storage_power_cron_events
 DROP CONSTRAINT cron_events_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_power_cron_event_buckets
-DROP CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_v0state_fkey;
+DROP CONSTRAINT cron_bs_height_state_root_cid_s_pow_actor_id_pow_state_fkey;
 
 ALTER TABLE filecoin.storage_power_cron_event_buckets
 DROP CONSTRAINT cron_buckets_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_power_actor_v2state
-DROP CONSTRAINT power_v2state_height_state_root_cid_s_pow_actor_id_actors_fkey;
+ALTER TABLE filecoin.storage_power_actor_state
+DROP CONSTRAINT power_state_height_state_root_cid_s_pow_actor_id_actors_fkey;
 
-ALTER TABLE filecoin.storage_power_actor_v2state
-DROP CONSTRAINT power_v2state_height_proof_val_batch_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_power_actor_state
+DROP CONSTRAINT power_state_height_proof_val_batch_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_power_actor_v2state
-DROP CONSTRAINT power_v2state_height_claims_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_power_actor_state
+DROP CONSTRAINT power_state_height_claims_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_power_actor_v2state
-DROP CONSTRAINT power_v2state_height_cron_event_queue_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_power_actor_state
+DROP CONSTRAINT power_state_height_cron_event_queue_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_power_actor_v2state
-DROP CONSTRAINT power_v2state_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.storage_power_actor_v0state
-DROP CONSTRAINT power_v0state_height_state_root_cid_s_pow_actor_id_actors_fkey;
-
-ALTER TABLE filecoin.storage_power_actor_v0state
-DROP CONSTRAINT power_v0state_height_proof_val_batch_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.storage_power_actor_v0state
-DROP CONSTRAINT power_v0state_height_claims_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.storage_power_actor_v0state
-DROP CONSTRAINT power_v0state_height_cron_event_queue_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.storage_power_actor_v0state
-DROP CONSTRAINT power_v0state_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_power_actor_state
+DROP CONSTRAINT power_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.payment_channel_lane_states
 DROP CONSTRAINT pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey;
@@ -1049,55 +878,34 @@ ALTER TABLE filecoin.multisig_actor_state
 DROP CONSTRAINT msig_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.miner_partition_expirations
-DROP CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_v0ps_fkey;
+DROP CONSTRAINT exps_height_state_root_cid_m_actor_id_dl_index_p_num_ps_fkey;
 
 ALTER TABLE filecoin.miner_partition_expirations
 DROP CONSTRAINT exps_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2partitions
-DROP CONSTRAINT m_v2parts_height_state_root_cid_m_actor_id_dl_index_v2dls_fkey;
+ALTER TABLE filecoin.miner_partitions
+DROP CONSTRAINT m_parts_height_state_root_cid_m_actor_id_dl_index_dls_fkey;
 
-ALTER TABLE filecoin.miner_v2partitions
-DROP CONSTRAINT miner_v2parts_height_early_term_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_partitions
+DROP CONSTRAINT miner_parts_height_early_term_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2partitions
-DROP CONSTRAINT miner_v2parts_height_exp_epochs_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_partitions
+DROP CONSTRAINT miner_parts_height_exp_epochs_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2partitions
-DROP CONSTRAINT miner_v2parts_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_partitions
+DROP CONSTRAINT miner_parts_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v0partitions
-DROP CONSTRAINT m_v0parts_height_state_root_cid_m_actor_id_dl_index_v0dls_fkey;
+ALTER TABLE filecoin.miner_sector_infos
+DROP CONSTRAINT m_sec_infos_height_state_root_cid_miner_actor_id_state_fkey;
 
-ALTER TABLE filecoin.miner_v0partitions
-DROP CONSTRAINT miner_v0parts_height_early_term_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_sector_infos
+DROP CONSTRAINT m_sec_infos_height_sealed_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v0partitions
-DROP CONSTRAINT miner_v0parts_height_exp_epochs_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0partitions
-DROP CONSTRAINT miner_v0parts_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v2sector_infos
-DROP CONSTRAINT m_v2sec_infos_height_state_root_cid_miner_actor_id_v2state_fkey;
-
-ALTER TABLE filecoin.miner_v2sector_infos
-DROP CONSTRAINT m_v2sec_infos_height_sealed_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v2sector_infos
-DROP CONSTRAINT m_v2sec_infos_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0sector_infos
-DROP CONSTRAINT m_v0sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey;
-
-ALTER TABLE filecoin.miner_v0sector_infos
-DROP CONSTRAINT m_v0sec_infos_height_sealed_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0sector_infos
-DROP CONSTRAINT m_v0sec_infos_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_sector_infos
+DROP CONSTRAINT m_sec_infos_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.miner_pre_committed_sector_infos
-DROP CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_v0state_fkey;
+DROP CONSTRAINT pre_sec_infos_height_state_root_cid_miner_actor_id_state_fkey;
 
 ALTER TABLE filecoin.miner_pre_committed_sector_infos
 DROP CONSTRAINT pre_sec_infos_height_sealed_cid_ipld_blocks_fkey;
@@ -1105,95 +913,53 @@ DROP CONSTRAINT pre_sec_infos_height_sealed_cid_ipld_blocks_fkey;
 ALTER TABLE filecoin.miner_pre_committed_sector_infos
 DROP CONSTRAINT pre_sec_infos_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2deadlines
-DROP CONSTRAINT miner_v2dls_height_state_root_cid_miner_actor_id_v2state_fkey;
+ALTER TABLE filecoin.miner_deadlines
+DROP CONSTRAINT miner_dls_height_state_root_cid_miner_actor_id_state_fkey;
 
-ALTER TABLE filecoin.miner_v2deadlines
-DROP CONSTRAINT miner_v2deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_deadlines
+DROP CONSTRAINT miner_deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2deadlines
-DROP CONSTRAINT miner_v2deadlines_height_partitions_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_deadlines
+DROP CONSTRAINT miner_deadlines_height_partitions_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2deadlines
-DROP CONSTRAINT miner_v2deadlines_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0deadlines
-DROP CONSTRAINT miner_v0dls_height_state_root_cid_miner_actor_id_v0state_fkey;
-
-ALTER TABLE filecoin.miner_v0deadlines
-DROP CONSTRAINT miner_v0deadlines_height_exp_epochs_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0deadlines
-DROP CONSTRAINT miner_v0deadlines_height_partitions_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_v0deadlines
-DROP CONSTRAINT miner_v0deadlines_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_deadlines
+DROP CONSTRAINT miner_deadlines_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.miner_vesting_funds
-DROP CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_v0state_fkey;
+DROP CONSTRAINT vesting_funds_height_state_root_cid_miner_actor_id_state_fkey;
 
 ALTER TABLE filecoin.miner_vesting_funds
 DROP CONSTRAINT vesting_funds_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v2infos
-DROP CONSTRAINT miner_v2infos_height_state_root_cid_miner_actor_id_v2state_fkey;
+ALTER TABLE filecoin.miner_infos
+DROP CONSTRAINT miner_infos_height_state_root_cid_miner_actor_id_state_fkey;
 
-ALTER TABLE filecoin.miner_v2infos
-DROP CONSTRAINT miner_v2infos_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_infos
+DROP CONSTRAINT miner_infos_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_v0infos
-DROP CONSTRAINT miner_v0infos_height_state_root_cid_miner_actor_id_v0state_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_state_root_cid_miner_actor_id_actors_fkey;
 
-ALTER TABLE filecoin.miner_v0infos
-DROP CONSTRAINT miner_v0infos_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_deadlines_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_state_root_cid_miner_actor_id_actors_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_sectors_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_deadlines_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_allocated_sectors_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_sectors_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_allocated_sectors_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_pre_com_sec_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_vesting_funds_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_pre_com_sec_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_vesting_funds_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v2state
-DROP CONSTRAINT miner_v2state_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_state_root_cid_miner_actor_id_actors_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_deadlines_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_sectors_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_allocated_sectors_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_pre_com_sec_exp_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_pre_com_sec_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_vesting_funds_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.miner_actor_v0state
-DROP CONSTRAINT miner_v0state_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.miner_actor_state
+DROP CONSTRAINT miner_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_actor_deal_ops_at_epoch
 DROP CONSTRAINT ops_height_state_root_cid_storage_actor_id_epoch_deal_bkts_fkey;
@@ -1273,29 +1039,20 @@ DROP CONSTRAINT storage_height_proposals_root_cid_ipld_blocks_fkey;
 ALTER TABLE filecoin.storage_actor_state
 DROP CONSTRAINT storage_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.reward_actor_v2state
-DROP CONSTRAINT reward_v2state_height_state_root_cid_ipld_blocks_fkey;
-
-ALTER TABLE filecoin.reward_actor_v0state
-DROP CONSTRAINT rwrd_v0state_height_state_root_cid_reward_actor_id_actors_fkey;
-
 ALTER TABLE filecoin.account_actor_addresses
 DROP CONSTRAINT addresses_height_state_root_cid_account_actor_id_actors_fkey;
 
 ALTER TABLE filecoin.account_actor_addresses
 DROP CONSTRAINT addresses_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.reward_actor_v2state
-DROP CONSTRAINT rwrd_v2state_height_state_root_cid_reward_actor_id_actors_fkey;
+ALTER TABLE filecoin.reward_actor_state
+DROP CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey;
 
-ALTER TABLE filecoin.reward_actor_v2state
-DROP CONSTRAINT reward_v2state_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.reward_actor_state
+DROP CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey;
 
-ALTER TABLE filecoin.reward_actor_v0state
-DROP CONSTRAINT rwrd_v0state_height_state_root_cid_reward_actor_id_actors_fkey;
-
-ALTER TABLE filecoin.reward_actor_v0state
-DROP CONSTRAINT reward_v0state_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.reward_actor_state
+DROP CONSTRAINT reward_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.cron_actor_method_receivers
 DROP CONSTRAINT method_rcvrs_height_state_root_cid_cron_actor_id_actors_fkey;
