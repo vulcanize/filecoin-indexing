@@ -4,7 +4,7 @@ docker rm -f $(docker ps -a -q)
 
 docker volume rm $(docker volume ls -q)
 
-docker-compose -f docker-compose.test.yml up -d test-db
+docker-compose -f docker-compose.test.yml up -d ipld-fil-db
 sleep 5s
 
 export HOST_NAME=localhost
@@ -21,4 +21,4 @@ curl -LJO https://github.com/schemaspy/schemaspy/releases/download/v6.1.0/schema
 sudo apt-get update
 sudo apt-get install -y graphviz
 
-java -jar schemaspy-6.1.0.jar -t pgsql -dp postgresql-42.3.1.jar -host localhost -db database -u username -p password -o output
+java -jar schemaspy-6.1.0.jar -t pgsql -dp postgresql-42.3.1.jar -host $HOST_NAME -port $PORT -db $TEST_DB -u $USER -p $PGPASSWORD -o output

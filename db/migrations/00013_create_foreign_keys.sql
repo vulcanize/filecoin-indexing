@@ -1049,9 +1049,6 @@ ALTER TABLE filecoin.reward_actor_state
 DROP CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey;
 
 ALTER TABLE filecoin.reward_actor_state
-DROP CONSTRAINT rwrd_state_height_state_root_cid_reward_actor_id_actors_fkey;
-
-ALTER TABLE filecoin.reward_actor_state
 DROP CONSTRAINT reward_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.cron_actor_method_receivers

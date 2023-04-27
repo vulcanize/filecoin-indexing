@@ -94,4 +94,4 @@ docker-build:
 
 .PHONY: test-migrations
 test-migrations: $(GOOSE)
-	./scripts/test_migration.sh
+	./db/scripts/test_migration.sh

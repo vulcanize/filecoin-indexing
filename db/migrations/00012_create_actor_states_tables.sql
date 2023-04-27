@@ -554,7 +554,6 @@ DROP TABLE filecoin.miner_deadlines;
 DROP TABLE filecoin.miner_vesting_funds;
 DROP TABLE filecoin.miner_infos;
 DROP TABLE filecoin.miner_actor_state;
-DROP TABLE filecoin.storage_actor_locked_tokens;
 DROP TABLE filecoin.storage_actor_deal_ops_at_epoch;
 DROP TABLE filecoin.storage_actor_deal_ops_buckets;
 DROP TABLE filecoin.storage_actor_locked_tokens;
