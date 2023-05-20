@@ -1,19 +1,3 @@
-// Copyright 2022 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package schema
 
 import (
@@ -50,7 +34,6 @@ type Table struct {
 	Columns []Column
 
 	UpsertClause ConflictClause
-	Aggregate bool
 }
 
 type colfmt = func(interface{}) string
@@ -92,34 +75,30 @@ func (c ConflictClause) Set(fields ...string) ConflictClause {
 // ToInsertStatement returns a Postgres-compatible SQL insert statement for the table
 // using positional placeholders
 func (tbl *Table) ToInsertStatement(upsert bool) string {
-	if !tbl.Aggregate {
-		var colnames, placeholders []string
-		for i, col := range tbl.Columns {
-			colnames = append(colnames, col.Name)
-			placeholders = append(placeholders, fmt.Sprintf("$%d", i+1))
-		}
-		suffix := fmt.Sprintf("ON CONFLICT (%s)", strings.Join(tbl.UpsertClause.Target, ", "))
-		if upsert && len(tbl.UpsertClause.Update) != 0 {
-			var update_placeholders []string
-			for _, name := range tbl.UpsertClause.Update {
-				i := funk.IndexOf(tbl.Columns, func(col Column) bool { return col.Name == name })
-				update_placeholders = append(update_placeholders, fmt.Sprintf("$%d", i+1))
-			}
-			suffix += fmt.Sprintf(
-				" DO UPDATE SET (%s) = (%s)",
-				strings.Join(tbl.UpsertClause.Update, ", "), strings.Join(update_placeholders, ", "),
-			)
-		} else {
-			suffix += " DO NOTHING"
-		}
-
-		return fmt.Sprintf(
-			"INSERT INTO %s (%s) VALUES (%s) %s",
-			tbl.Name, strings.Join(colnames, ", "), strings.Join(placeholders, ", "), suffix,
-		)
+	var colnames, placeholders []string
+	for i, col := range tbl.Columns {
+		colnames = append(colnames, col.Name)
+		placeholders = append(placeholders, fmt.Sprintf("$%d", i+1))
 	}
-	// TODO: return statement for batch insert
-	return ""
+	suffix := fmt.Sprintf("ON CONFLICT (%s)", strings.Join(tbl.UpsertClause.Target, ", "))
+	if upsert && len(tbl.UpsertClause.Update) != 0 {
+		var update_placeholders []string
+		for _, name := range tbl.UpsertClause.Update {
+			i := funk.IndexOf(tbl.Columns, func(col Column) bool { return col.Name == name })
+			update_placeholders = append(update_placeholders, fmt.Sprintf("$%d", i+1))
+		}
+		suffix += fmt.Sprintf(
+			" DO UPDATE SET (%s) = (%s)",
+			strings.Join(tbl.UpsertClause.Update, ", "), strings.Join(update_placeholders, ", "),
+		)
+	} else {
+		suffix += " DO NOTHING"
+	}
+
+	return fmt.Sprintf(
+		"INSERT INTO %s (%s) VALUES (%s) %s",
+		tbl.Name, strings.Join(colnames, ", "), strings.Join(placeholders, ", "), suffix,
+	)
 }
 
 func sprintf(f string) colfmt {
