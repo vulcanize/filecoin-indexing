@@ -31,16 +31,56 @@ type Statements interface {
 	// SQL statements used when writing directly to the database
 	InsertCIDsStm() string
 	InsertIPLDsStm() string
-	InsertTipSetStm() string
-	InsertBlockHeaderStm() string
+	InsertTipSetsStm() string
+	InsertTipSetMembersStm() string
+	InsertBlockHeadersStm() string
 	InsertBlockParentsStm() string
+	InsertBlockMessagesStm() string
 	InsertMessagesStm() string
+	InsertParsedMessagesStm() string
+	InsertInternalMessagesStm() string
+	InsertInternalParsedMessagesStm() string
+	InsertVMMessagesStm() string
 	InsertReceiptsStm() string
-	InsertDRandStm() string
-	InsertIDAddressesStm() string
-	InsertMarketDealsStm() string
+	InsertDRandsStm() string
 	InsertActorsStm() string
-	InsertMinerInfos() string
+	InsertActorStatesStm() string
+	InsertActorEventsStm() string
+	InsertInitActorIdAddressesStm() string
+	InsertCronActorMethodReceiversStm() string
+	InsertRewardActorStateStm() string
+	InsertAccountActorAddressesStm() string
+	InsertStorageActorStateStm() string
+	InsertStorageActorDealProposalsStm() string
+	InsertStorageActorDealStatesStm() string
+	InsertStorageActorPendingProposalsStm() string
+	InsertStorageActorEscrowsStm() string
+	InsertStorageActorLockedFundsStm() string
+	InsertStorageActorDealOpsBucketsStm() string
+	InsertStorageActorDealOpsAtEpochStm() string
+	InsertMinerActorStateStm() string
+	InsertMinerInfosStm() string
+	InsertMinerVestingFundsStm() string
+	InsertMinerDeadlinesStm() string
+	InsertMinerPreCommittedSectorInfosStm() string
+	InsertMinerSectorInfosStm() string
+	InsertMinerPartitionsStm() string
+	InsertMinerPartitionExpirationsStm() string
+	InsertMultisigActorStateStm() string
+	InsertMultisigActorPendingTxsStm() string
+	InsertPaymentChannelActorStateStm() string
+	InsertPaymentChannelLaneStatesStm() string
+	InsertStoragePowerActorStateStm() string
+	InsertStoragePowerCronBucketsStm() string
+	InsertStoragePowerCronEventsStm() string
+	InsertStoragePowerClaimsStm() string
+	InsertStoragePowerProofValidationBucketsStm() string
+	InsertStoragePowerProofSealVerifyInfosStm() string
+	InsertVerifiedRegistryActorStateStm() string
+	InsertVerifiedRegistryVerifiersStm() string
+	InsertVerifiedRegistryClientsStm() string
+	InsertFEVMActorStateStm() string
+	InsertFEVMActorStorageStm() string
 
 	// Table/column descriptions for use with CopyFrom and similar commands.
 	CIDsTableName() []string
@@ -49,25 +89,103 @@ type Statements interface {
 	IPLDsColumnNames() []string
 	TipSetsTableName() []string
 	TipSetsColumnNames() []string
+	TipSetMembersTableName() []string
+	TipSetMembersColumnNames() []string
 	BlockHeadersTableName() []string
 	BlockHeadersColumnNames() []string
 	BlockParentsTableName() []string
 	BlockParentsColumnNames() []string
+	BlockMessagesTableName() []string
+	BlockMessagesColumnNames() []string
 	MessagesTableName() []string
 	MessagesColumnNames() []string
+	ParsedMessagesTableName() []string
+	ParsedMessagesColumnNames() []string
+	InternalMessagesTableName() []string
+	InternalMessagesColumnNames() []string
+	InternalParsedMessagesTableName() []string
+	InternalParsedMessagesColumnNames() []string
+	VMMessagesTableName() []string
+	VMMessagesColumnNames() []string
 	ReceiptsTableName() []string
 	ReceiptsColumnNames() []string
 	DRandsTableName() []string
 	DRandsColumnNames() []string
-	IDAddressesTableName() []string
-	IDAddressesColumnNames() []string
-	MarketDealsTableName() []string
-	MarketDealsColumnNames() []string
 	ActorsTableName() []string
 	ActorsColumnNames() []string
+	ActorStatesTableName() []string
+	ActorStatesColumnNames() []string
+	ActorEventsTableName() []string
+	ActorEventsColumnNames() []string
+	InitActorIdAddressesTableName() []string
+	InitActorIdAddressesColumnNames() []string
+	CronActorMethodReceiversTableName() []string
+	CronActorMethodReceiversColumnNames() []string
+	RewardActorStateTableName() []string
+	RewardActorStateColumnNames() []string
+	AccountActorAddressesTableName() []string
+	AccountActorAddressColumnNames() []string
+	StorageActorStateTableName() []string
+	StorageActorStateColumnNames() []string
+	StorageActorDealProposalsTableName() []string
+	StorageActorDealProposalsColumnNames() []string
+	StorageActorDealStatesTableName() []string
+	StorageActorDealStatesColumnNames() []string
+	StorageActorPendingProposalsTableName() []string
+	StorageActorPendingProposalsColumnNames() []string
+	StorageActorEscrowsTableName() []string
+	StorageActorEscrowsColumnNames() []string
+	StorageActorLockedTokensTableName() []string
+	StorageActorLockedTokensColumnNames() []string
+	StorageActorDealOpsBucketsTableName() []string
+	StorageActorDealOpsBucketsColumnNames() []string
+	StorageActorDealOpsAtEpochTableName() []string
+	StorageActorDealOpsAtEpochColumnNames() []string
+	MinerActorStateTableName() []string
+	MinerActorStateColumnNames() []string
 	MinerInfosTableName() []string
 	MinerInfosColumnNames() []string
-	// TODO: remaining tables
+	MinerVestingFundsTableName() []string
+	MinerVestingFundsColumnNames() []string
+	MinerDeadlinesTableName() []string
+	MinerDeadlinesColumnNames() []string
+	MinerPreCommittedSectorInfosTableName() []string
+	MinerPreCommittedSectorInfosColumnNames() []string
+	MinerSectorInfosTableName() []string
+	MinerSectorInfosColumnNames() []string
+	MinerPartitionsTableName() []string
+	MinerPartitionsColumnNames() []string
+	MinerPartitionExpirationsTableName() []string
+	MinerPartitionExpirationsColumnNames() []string
+	MultisigActorStateTableName() []string
+	MultisigActorStateColumnNames() []string
+	MultisigPendingTxsTableName() []string
+	MultisigPendingTxsColumnNames() []string
+	PaymentChannelActorStateTableName() []string
+	PaymentChannelActorStateColumnNames() []string
+	PaymentChannelLaneStatesTableName() []string
+	PaymentChannelLaneStateColumnNames() []string
+	StoragePowerActorStateTableName() []string
+	StoragePowerActorStateColumnNames() []string
+	StoragePowerCronEventBucketsTableName() []string
+	StoragePowerCronEventBucketsColumnNames() []string
+	StoragePowerCronEventsTableName() []string
+	StoragePowerCronEventsColumnNames() []string
+	StoragePowerClaimsTableName() []string
+	StoragePowerClaimsColumnNames() []string
+	StoragePowerProofValidationBucketsTableName() []string
+	StoragePowerProofValidationBucketsColumnNames() []string
+	StoragePowerProofSealVerifyInfosTableName() []string
+	StoragePowerProofSealVerifyInfosColumnNames() []string
+	VerifiedRegistryActorStateTableName() []string
+	VerifiedRegistryVerifiersTableName() []string
+	VerifiedRegistryVerifiersColumnNames() []string
+	VerifiedRegistryClientsTableName() []string
+	VerifiedRegistryClientsColumnNames() []string
+	FEVMActorStateTableNames() []string
+	FEVMActorStateColumnNames() []string
+	FEVMActorStorageTableNames() []string
+	FEVMActorStorageColumnNames() []string
 }
 
 // Tx interface to accommodate different concrete SQL transaction types
