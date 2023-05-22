@@ -74,7 +74,6 @@ func (a *ActorExtractor) PullSegment(ctx context.Context, rng types2.Range, filt
 	return payloads, nil
 }
 
-
 func (a *ActorExtractor) getActorsByCIDs(ctx context.Context, startCID, stopCID cid.Cid, filter types2.Filter) ([]types2.Payload, error) {
 	startBlk, err := a.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
@@ -106,7 +105,7 @@ func (a *ActorExtractor) getActorsByCIDs(ctx context.Context, startCID, stopCID 
 	return a.getActorsByHeights(ctx, start, stop, filter)
 }
 
-func (a *ActorExtractor) getActorsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error)  {
+func (a *ActorExtractor) getActorsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error) {
 	startBlk, err := a.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
 		return nil, nil, nil, err
@@ -145,7 +144,7 @@ func (a *ActorExtractor) getActorsByHeights(ctx context.Context, start, stop int
 	if start > stop {
 		return nil, fmt.Errorf("start epoch (%d) is above stop epoch (%d)", start, stop)
 	}
-	payloads := make([]types2.Payload, 0, start - stop + 1) // TODO:
+	payloads := make([]types2.Payload, 0, start-stop+1) // TODO:
 	for i := start; i <= stop; i++ {
 		ts, err := a.chainStore.GetTipsetByHeight(ctx, abi.ChainEpoch(i), nil, false)
 		if err != nil {

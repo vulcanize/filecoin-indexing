@@ -107,7 +107,7 @@ func (h *HeaderExtractor) getHeadersByTipSetCIDs(ctx context.Context, startCID, 
 	return h.getHeadersByHeights(ctx, start, stop, filter)
 }
 
-func (h *HeaderExtractor) getHeadersByTipSetCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error)  {
+func (h *HeaderExtractor) getHeadersByTipSetCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error) {
 	startBlk, err := h.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
 		return nil, nil, nil, err
@@ -146,7 +146,7 @@ func (h *HeaderExtractor) getHeadersByHeights(ctx context.Context, start, stop i
 	if start > stop {
 		return nil, fmt.Errorf("start epoch (%d) is above stop epoch (%d)", start, stop)
 	}
-	payloads := make([]types2.Payload, 0, start - stop + 1)
+	payloads := make([]types2.Payload, 0, start-stop+1)
 	for i := start; i <= stop; i++ {
 		ts, err := h.chainStore.GetTipsetByHeight(ctx, abi.ChainEpoch(i), nil, false)
 		if err != nil {
@@ -257,6 +257,6 @@ func (h *HeaderExtractor) getHeadersForTipSet(ctx context.Context, tskCID cid.Ci
 			CID:    &tskCID,
 			Height: big.NewInt(int64(ts.Height())),
 		},
-		ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid" : {tskCID}},
+		ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid": {tskCID}},
 	}}, nil
 }

@@ -2,8 +2,9 @@ package types
 
 import (
 	"context"
-	"github.com/filecoin-project/lily/lens"
 	"math/big"
+
+	"github.com/filecoin-project/lily/lens"
 
 	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/filecoin-project/lotus/api"
@@ -17,7 +18,7 @@ import (
 
 type Filter func(node ipld.Node) bool
 
-type Extractor interface{
+type Extractor interface {
 	HeadExtractor
 	HistoricalExtractor
 }
@@ -34,16 +35,16 @@ type HistoricalExtractor interface {
 }
 
 type Payload struct {
-	IPLDs      []ipld.Node
-	For        HeightOrCID
-	ParentCIDs map[string][]cid.Cid
+	IPLDs        []ipld.Node
+	For          HeightOrCID
+	ParentCIDs   map[string][]cid.Cid
 	Associations []map[string]interface{}
 }
 
 type Offset struct {
 	Reference HeightOrCID
 	Offset    uint64
-	Mod uint64
+	Mod       uint64
 }
 
 type Range struct {
@@ -61,7 +62,7 @@ type Subscription interface {
 
 type HeightOrCID struct {
 	Height *big.Int
-	CID *cid.Cid
+	CID    *cid.Cid
 }
 
 var _ ChainAccess = &store.ChainStore{}

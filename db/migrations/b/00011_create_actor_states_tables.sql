@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_state (
     state_root_cid                   TEXT NOT NULL,
     storage_actor_id                 TEXT NOT NULL,
     proposals_root_cid               TEXT NOT NULL,
-    deal_states_root_cid             TEXT NOT NULL,
+    deal_state_root_cid              TEXT NOT NULL,
     pending_proposals_root_cid       TEXT NOT NULL,
     escrows_root_cid                 TEXT NOT NULL,
     locked_tokens_root_cid           TEXT NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_proposals (
 );
 
 -- maps m-to-1 to a storage_actor_state entry
-CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_states (
+CREATE TABLE IF NOT EXISTS filecoin.storage_actor_deal_state (
     height                  BIGINT NOT NULL,
     state_root_cid          TEXT NOT NULL,
     storage_actor_id        TEXT NOT NULL,
@@ -367,12 +367,12 @@ CREATE TABLE IF NOT EXISTS filecoin.payment_channel_actor_state (
     to_send                         NUMERIC NOT NULL,
     settling_at_epoch               BIGINT NOT NULL,
     min_settle_height               BIGINT NOT NULL,
-    lane_states_root_cid            TEXT NOT NULL,
+    lane_state_root_cid             TEXT NOT NULL,
     PRIMARY KEY (height, state_root_cid, payment_channel_actor_id)
 );
 
 -- maps m-to-1 to a payment_channel_actor_state entry
-CREATE TABLE IF NOT EXISTS filecoin.payment_channel_lane_states (
+CREATE TABLE IF NOT EXISTS filecoin.payment_channel_lane_state (
     height                          BIGINT NOT NULL,
     state_root_cid                  TEXT NOT NULL,
     payment_channel_actor_id        TEXT NOT NULL,
@@ -542,7 +542,7 @@ DROP TABLE filecoin.storage_power_claims;
 DROP TABLE filecoin.storage_power_cron_events;
 DROP TABLE filecoin.storage_power_cron_event_buckets;
 DROP TABLE filecoin.storage_power_actor_state;
-DROP TABLE filecoin.payment_channel_lane_states;
+DROP TABLE filecoin.payment_channel_lane_state;
 DROP TABLE filecoin.payment_channel_actor_state;
 DROP TABLE filecoin.multisig_pending_txs;
 DROP TABLE filecoin.multisig_actor_state;
@@ -559,7 +559,7 @@ DROP TABLE filecoin.storage_actor_deal_ops_buckets;
 DROP TABLE filecoin.storage_actor_locked_tokens;
 DROP TABLE filecoin.storage_actor_escrows;
 DROP TABLE filecoin.storage_actor_pending_proposals;
-DROP TABLE filecoin.storage_actor_deal_states;
+DROP TABLE filecoin.storage_actor_deal_state;
 DROP TABLE filecoin.storage_actor_deal_proposals;
 DROP TABLE filecoin.storage_actor_state;
 DROP TABLE filecoin.account_actor_addresses;
