@@ -16,9 +16,9 @@ import (
 
 // PGXDriver driver, implements sql.Driver
 type PGXDriver struct {
-	ctx      context.Context
-	pool     *pgxpool.Pool
-	config   Config
+	ctx    context.Context
+	pool   *pgxpool.Pool
+	config Config
 }
 
 // ConnectPGX initializes and returns a PGX connection pool

@@ -17,6 +17,7 @@ const (
 	Dbytea
 	Dvarchar
 	Dtext
+	// TODO: add missing types
 )
 
 type ConflictClause struct {
@@ -30,6 +31,7 @@ type Column struct {
 	Array bool
 }
 type Table struct {
+	Schema  string
 	Name    string
 	Columns []Column
 
@@ -51,6 +53,18 @@ func (tbl *Table) ToCsvRow(args ...interface{}) []string {
 		row = append(row, value)
 	}
 	return row
+}
+
+func (tbl *Table) ColumnNames() []string {
+	var names []string
+	for _, col := range tbl.Columns {
+		names = append(names, col.Name)
+	}
+	return names
+}
+
+func (tbl *Table) FullName() []string {
+	return []string{tbl.Schema, tbl.Name}
 }
 
 func (tbl *Table) VarcharColumns() []string {

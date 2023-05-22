@@ -14,8 +14,8 @@ import (
 
 // SQLXDriver driver, implements sql.Driver
 type SQLXDriver struct {
-	ctx      context.Context
-	db       *sqlx.DB
+	ctx context.Context
+	db  *sqlx.DB
 }
 
 // ConnectSQLX initializes and returns a SQLX connection pool for postgres

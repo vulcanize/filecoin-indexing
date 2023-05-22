@@ -44,7 +44,7 @@ type Statements interface {
 	InsertReceiptsStm() string
 	InsertDRandsStm() string
 	InsertActorsStm() string
-	InsertActorStatesStm() string
+	InsertActorStateStm() string
 	InsertActorEventsStm() string
 	InsertInitActorIdAddressesStm() string
 	InsertCronActorMethodReceiversStm() string
@@ -52,7 +52,7 @@ type Statements interface {
 	InsertAccountActorAddressesStm() string
 	InsertStorageActorStateStm() string
 	InsertStorageActorDealProposalsStm() string
-	InsertStorageActorDealStatesStm() string
+	InsertStorageActorDealStateStm() string
 	InsertStorageActorPendingProposalsStm() string
 	InsertStorageActorEscrowsStm() string
 	InsertStorageActorLockedFundsStm() string
@@ -69,7 +69,7 @@ type Statements interface {
 	InsertMultisigActorStateStm() string
 	InsertMultisigActorPendingTxsStm() string
 	InsertPaymentChannelActorStateStm() string
-	InsertPaymentChannelLaneStatesStm() string
+	InsertPaymentChannelLaneStateStm() string
 	InsertStoragePowerActorStateStm() string
 	InsertStoragePowerCronBucketsStm() string
 	InsertStoragePowerCronEventsStm() string
@@ -113,8 +113,8 @@ type Statements interface {
 	DRandsColumnNames() []string
 	ActorsTableName() []string
 	ActorsColumnNames() []string
-	ActorStatesTableName() []string
-	ActorStatesColumnNames() []string
+	ActorStateTableName() []string
+	ActorStateColumnNames() []string
 	ActorEventsTableName() []string
 	ActorEventsColumnNames() []string
 	InitActorIdAddressesTableName() []string
@@ -129,8 +129,8 @@ type Statements interface {
 	StorageActorStateColumnNames() []string
 	StorageActorDealProposalsTableName() []string
 	StorageActorDealProposalsColumnNames() []string
-	StorageActorDealStatesTableName() []string
-	StorageActorDealStatesColumnNames() []string
+	StorageActorDealStateTableName() []string
+	StorageActorDealStateColumnNames() []string
 	StorageActorPendingProposalsTableName() []string
 	StorageActorPendingProposalsColumnNames() []string
 	StorageActorEscrowsTableName() []string
@@ -163,7 +163,7 @@ type Statements interface {
 	MultisigPendingTxsColumnNames() []string
 	PaymentChannelActorStateTableName() []string
 	PaymentChannelActorStateColumnNames() []string
-	PaymentChannelLaneStatesTableName() []string
+	PaymentChannelLaneStateTableName() []string
 	PaymentChannelLaneStateColumnNames() []string
 	StoragePowerActorStateTableName() []string
 	StoragePowerActorStateColumnNames() []string

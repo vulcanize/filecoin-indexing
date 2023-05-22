@@ -1,7 +1,8 @@
 package schema
 
 var TableIPLDs = Table{
-	Name: `ipld.blocks`,
+	Schema: "ipld",
+	Name:   "blocks",
 	Columns: []Column{
 		{Name: "block_number", Type: Dbigint},
 		{Name: "key", Type: Dtext},
@@ -11,7 +12,8 @@ var TableIPLDs = Table{
 }
 
 var TableCIDs = Table{
-	Name: `filecin.cids`,
+	Schema: "filecoin",
+	Name:   "cids",
 	Columns: []Column{
 		{Name: "cid", Type: Dtext},
 		{Name: "id", Type: Dbigint},
@@ -20,7 +22,8 @@ var TableCIDs = Table{
 }
 
 var TableTipSets = Table{
-	Name: `filecoin.tip_sets`,
+	Schema: "filecoin",
+	Name:   "tip_sets",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "parent_tip_set_key_cid", Type: Dbigint},
@@ -30,7 +33,8 @@ var TableTipSets = Table{
 }
 
 var TableTipSetMembers = Table{
-	Name: `filecoin.tip_set_members`,
+	Schema: "filecoin",
+	Name:   "tip_set_members",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "parent_tip_set_key_cid", Type: Dbigint},
@@ -41,7 +45,8 @@ var TableTipSetMembers = Table{
 }
 
 var TableBlockHeaders = Table{
-	Name: `filecoin.block_headers`,
+	Schema: "filecoin",
+	Name:   "block_headers",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -62,7 +67,8 @@ var TableBlockHeaders = Table{
 }
 
 var TableBlockParents = Table{
-	Name: `filecoin.block_parents`,
+	Schema: "filecoin",
+	Name:   "block_parents",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -72,7 +78,8 @@ var TableBlockParents = Table{
 }
 
 var TableBlockMessages = Table{
-	Name: `filecoin.block_messages`,
+	Schema: "filecoin",
+	Name:   "block_messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -82,7 +89,8 @@ var TableBlockMessages = Table{
 }
 
 var TableMessages = Table{
-	Name: `filecoin.messages`,
+	Schema: "filecoin",
+	Name:   "messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -102,7 +110,8 @@ var TableMessages = Table{
 }
 
 var TableParsedMessages = Table{
-	Name: "filecoin.parsed_messages",
+	Schema: "filecoin",
+	Name:   "parsed_messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -113,7 +122,8 @@ var TableParsedMessages = Table{
 }
 
 var TableInternalMessages = Table{
-	Name: `filecoin.internal_messages`,
+	Schema: "filecoin",
+	Name:   "internal_messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -133,7 +143,8 @@ var TableInternalMessages = Table{
 }
 
 var TableInternalParsedMessages = Table{
-	Name: "filecoin.internal_parsed_messages",
+	Schema: "filecoin",
+	Name:   "internal_parsed_messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -145,7 +156,8 @@ var TableInternalParsedMessages = Table{
 }
 
 var TableVMMessages = Table{
-	Name: `filecoin.vm_messages`,
+	Schema: "filecoin",
+	Name:   "vm_messages",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -159,7 +171,8 @@ var TableVMMessages = Table{
 }
 
 var TableReceipts = Table{
-	Name: `filecoin.receipts`,
+	Schema: "filecoin",
+	Name:   "receipts",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -174,7 +187,8 @@ var TableReceipts = Table{
 }
 
 var TableDrandBlockEntries = Table{
-	Name: `filecoin.drand_block_entries`,
+	Schema: "filecoin",
+	Name:   "drand_block_entries",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -186,7 +200,8 @@ var TableDrandBlockEntries = Table{
 }
 
 var TableActors = Table{
-	Name: `filecoin.actors`,
+	Schema: "filecoin",
+	Name:   "actors",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -200,8 +215,9 @@ var TableActors = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "id"),
 }
 
-var TableActorStates = Table{
-	Name: `filecoin.actor_states`,
+var TableActorState = Table{
+	Schema: "filecoin",
+	Name:   "actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -212,7 +228,8 @@ var TableActorStates = Table{
 }
 
 var TableActorEvents = Table{
-	Name: `filecoin.actor_events`,
+	Schema: "filecoin",
+	Name:   "actor_events",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "block_cid", Type: Dbigint},
@@ -228,7 +245,8 @@ var TableActorEvents = Table{
 }
 
 var TableInitActorIDAddresses = Table{
-	Name: `filecoin.init_actor_id_addresses`,
+	Schema: "filecoin",
+	Name:   "init_actor_id_addresses",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -241,7 +259,8 @@ var TableInitActorIDAddresses = Table{
 }
 
 var TableCronActorMethodReceivers = Table{
-	Name: `filecoin.cron_actor_method_receivers`,
+	Schema: "filecoin",
+	Name:   "cron_actor_method_receivers",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -253,8 +272,9 @@ var TableCronActorMethodReceivers = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "cron_actor_id", "receiver", "index"),
 }
 
-var TableRewardActorStates = Table{
-	Name: `filecoin.reward_actor_state`
+var TableRewardActorState = Table{
+	Schema: "filecoin",
+	Name:   "reward_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -276,7 +296,8 @@ var TableRewardActorStates = Table{
 }
 
 var TableAccountActorAddresses = Table{
-	Name: `filecoin.account_actor_addresses`,
+	Schema: "filecoin",
+	Name:   "account_actor_addresses",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -286,14 +307,15 @@ var TableAccountActorAddresses = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "account_actor_id"),
 }
 
-var TableStorageActorStates = Table{
-	Name: `filecoin.storage_actor_state`,
+var TableStorageActorState = Table{
+	Schema: "filecoin",
+	Name:   "storage_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
 		{Name: "storage_actor_id", Type: Dtext},
 		{Name: "proposals_root_cid", Type: Dbigint},
-		{Name: "deal_states_root_cid", Type: Dbigint},
+		{Name: "deal_state_root_cid", Type: Dbigint},
 		{Name: "pending_proposals_root_cid", Type: Dbigint},
 		{Name: "escrows_root_cid", Type: Dbigint},
 		{Name: "locked_tokens_root_cid", Type: Dbigint},
@@ -308,7 +330,8 @@ var TableStorageActorStates = Table{
 }
 
 var TableStorageActorDealProposals = Table{
-	Name: `filecoin.storage_actor_deal_proposals`,
+	Schema: "filecoin",
+	Name:   "storage_actor_deal_proposals",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -331,8 +354,9 @@ var TableStorageActorDealProposals = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "storage_actor_id", "deal_id"),
 }
 
-var TableStorageActorDealStates = Table{
-	Name: `filecoin.storage_actor_deal_states`,
+var TableStorageActorDealState = Table{
+	Schema: "filecoin",
+	Name:   "storage_actor_deal_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -347,7 +371,8 @@ var TableStorageActorDealStates = Table{
 }
 
 var TableStorageActorPendingProposals = Table{
-	Name: `filecoin.storage_actor_pending_proposals`,
+	Schema: "filecoin",
+	Name:   "storage_actor_pending_proposals",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -371,7 +396,8 @@ var TableStorageActorPendingProposals = Table{
 }
 
 var TableStorageActorEscrows = Table{
-	Name: `filecoin.storage_actor_escrows`,
+	Schema: "filecoin",
+	Name:   "storage_actor_escrows",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -384,7 +410,8 @@ var TableStorageActorEscrows = Table{
 }
 
 var TableStorageActorLockedTokens = Table{
-	Name: `filecoin.storage_actor_locked_tokens`,
+	Schema: "filecoin",
+	Name:   "storage_actor_locked_tokens",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -397,7 +424,8 @@ var TableStorageActorLockedTokens = Table{
 }
 
 var TableStorageActorDealOpsBuckets = Table{
-	Name: `filecoin.storage_actor_deal_ops_buckets`,
+	Schema: "filecoin",
+	Name:   "storage_actor_deal_ops_buckets",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -409,7 +437,8 @@ var TableStorageActorDealOpsBuckets = Table{
 }
 
 var TableStorageActorDealOpsAtEpoch = Table{
-	Name: `filecoin.storage_actor_deal_ops_at_epoch`,
+	Schema: "filecoin",
+	Name:   "storage_actor_deal_ops_at_epoch",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -421,8 +450,9 @@ var TableStorageActorDealOpsAtEpoch = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "storage_actor_id", "epoch", "deal_id"),
 }
 
-var TableMinerActorStates = Table{
-	Name: `filecoin.miner_actor_states`,
+var TableMinerActorState = Table{
+	Schema: "filecoin",
+	Name:   "miner_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -444,7 +474,8 @@ var TableMinerActorStates = Table{
 }
 
 var TableMinerInfos = Table{
-	Name: `filecoin.miner_infos`,
+	Schema: "filecoin",
+	Name:   "miner_infos",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -465,7 +496,8 @@ var TableMinerInfos = Table{
 }
 
 var TableMinerVestingFunds = Table{
-	Name: `filecoin.miner_vesting_funds`,
+	Schema: "filecoin",
+	Name:   "miner_vesting_funds",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -477,7 +509,8 @@ var TableMinerVestingFunds = Table{
 }
 
 var TableMinerDeadlines = Table{
-	Name: `filecoin.miner_deadlines`,
+	Schema: "filecoin",
+	Name:   "miner_deadlines",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -496,7 +529,8 @@ var TableMinerDeadlines = Table{
 }
 
 var TableMinerPreCommittedSectorInfos = Table{
-	Name: `filecoin.miner_pre_committed_sector_infos`,
+	Schema: "filecoin",
+	Name:   "miner_pre_committed_sector_infos",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -521,7 +555,8 @@ var TableMinerPreCommittedSectorInfos = Table{
 }
 
 var TableMinerSectorInfos = Table{
-	Name: `filecoin.miner_sector_infos`,
+	Schema: "filecoin",
+	Name:   "miner_sector_infos",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -545,7 +580,8 @@ var TableMinerSectorInfos = Table{
 }
 
 var TableMinerPartitions = Table{
-	Name: `filecoin.miner_partitions`,
+	Schema: "filecoin",
+	Name:   "miner_partitions",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -573,7 +609,8 @@ var TableMinerPartitions = Table{
 }
 
 var TableMinerPartitionExpirations = Table{
-	Name: `filecoin.miner_partition_expirations`,
+	Schema: "filecoin",
+	Name:   "miner_partition_expirations",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -593,8 +630,9 @@ var TableMinerPartitionExpirations = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "miner_actor_id", "deadline_index", "partition_number", "epoch"),
 }
 
-var TableMultisigActorStates = Table{
-	Name: `filecoin.multisig_actor_states`,
+var TableMultisigActorState = Table{
+	Schema: "filecoin",
+	Name:   "multisig_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -611,7 +649,8 @@ var TableMultisigActorStates = Table{
 }
 
 var TableMultisigPendingTransactions = Table{
-	Name: `filecoin.multisig_pending_txs`,
+	Schema: "filecoin",
+	Name:   "multisig_pending_transactions",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -626,8 +665,9 @@ var TableMultisigPendingTransactions = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "multisig_actor_id", "transaction_id"),
 }
 
-var TablePaymentChannelActorStates = Table{
-	Name: `filecoin.payment_channel_actor_states`,
+var TablePaymentChannelActorState = Table{
+	Schema: "filecoin",
+	Name:   "payment_channel_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -637,13 +677,14 @@ var TablePaymentChannelActorStates = Table{
 		{Name: "to_send", Type: Dnumeric},
 		{Name: "settling_at_epoch", Type: Dbigint},
 		{Name: "min_settle_height", Type: Dbigint},
-		{Name: "lane_states_root_cid", Type: Dbigint},
+		{Name: "lane_state_root_cid", Type: Dbigint},
 	},
 	UpsertClause: OnConflict("height", "state_root_cid", "payment_channel_actor_id"),
 }
 
-var TablePaymentChannelLaneStates = Table{
-	Name: `filecoin.payment_channel_lane_states`,
+var TablePaymentChannelLaneState = Table{
+	Schema: "filecoin",
+	Name:   "payment_channel_lane_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -656,8 +697,9 @@ var TablePaymentChannelLaneStates = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "payment_channel_actor_id", "lane_id"),
 }
 
-var TableStoragePowerActorStates = Table{
-	Name: `filecoin.storage_power_actor_states`,
+var TableStoragePowerActorState = Table{
+	Schema: "filecoin",
+	Name:   "storage_power_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -683,7 +725,8 @@ var TableStoragePowerActorStates = Table{
 }
 
 var TableStoragePowerCronEventBuckets = Table{
-	Name: `filecoin.storage_power_cron_event_buckets`,
+	Schema: "filecoin",
+	Name:   "storage_power_cron_event_buckets",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -694,7 +737,8 @@ var TableStoragePowerCronEventBuckets = Table{
 }
 
 var TableStoragePowerCronEvents = Table{
-	Name: `filecoin.storage_power_cron_events`,
+	Schema: "filecoin",
+	Name:   "storage_power_cron_events",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -709,7 +753,8 @@ var TableStoragePowerCronEvents = Table{
 }
 
 var TableStoragePowerClaims = Table{
-	Name: `filecoin.storage_power_claims`,
+	Schema: "filecoin",
+	Name:   "storage_power_claims",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -724,7 +769,8 @@ var TableStoragePowerClaims = Table{
 }
 
 var TableStoragePowerProofValidationBuckets = Table{
-	Name: `filecoin.storage_power_proof_validation_buckets`,
+	Schema: "filecoin",
+	Name:   "storage_power_proof_validation_buckets",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -735,7 +781,8 @@ var TableStoragePowerProofValidationBuckets = Table{
 }
 
 var TableStoragePowerProofSealVerifyInfos = Table{
-	Name: `filecoin.storage_power_proof_seal_verify_infos`,
+	Schema: "filecoin",
+	Name:   "storage_power_proof_seal_verify_infos",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -755,8 +802,9 @@ var TableStoragePowerProofSealVerifyInfos = Table{
 	UpsertClause: OnConflict("height", "state_root_cid", "storage_power_actor_id", "address", "index"),
 }
 
-var TableVerifiedRegistryActorStates = Table{
-	Name: `filecoin.verified_registry_actor_states`,
+var TableVerifiedRegistryActorState = Table{
+	Schema: "filecoin",
+	Name:   "verified_registry_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -769,7 +817,8 @@ var TableVerifiedRegistryActorStates = Table{
 }
 
 var TableVerifiedRegistryVerifiers = Table{
-	Name: `filecoin.verified_registry_verifiers`,
+	Schema: "filecoin",
+	Name:   "verified_registry_verifiers",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -782,7 +831,8 @@ var TableVerifiedRegistryVerifiers = Table{
 }
 
 var TableVerifiedRegistryClients = Table{
-	Name: `filecoin.verified_registry_clients`,
+	Schema: "filecoin",
+	Name:   "verified_registry_clients",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -795,7 +845,8 @@ var TableVerifiedRegistryClients = Table{
 }
 
 var TableFEVMActorState = Table{
-	Name: `filecoin.fevm_actor_state`,
+	Schema: "filecoin",
+	Name:   "fevm_actor_state",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},
@@ -810,7 +861,8 @@ var TableFEVMActorState = Table{
 }
 
 var TableFEVMActorStorage = Table{
-	Name: `filecoin.fevm_actor_storage`,
+	Schema: "filecoin",
+	Name:   "fevm_actor_storage",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "state_root_cid", Type: Dbigint},

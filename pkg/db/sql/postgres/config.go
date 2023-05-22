@@ -2,11 +2,12 @@ package postgres
 
 import (
 	"fmt"
-	"github.com/vulcanize/filecoin-indexing/pkg/db/shared"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/vulcanize/filecoin-indexing/pkg/db/shared"
 )
 
 // DriverType to explicitly type the kind of sql driver we are using
