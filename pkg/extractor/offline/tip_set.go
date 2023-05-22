@@ -107,7 +107,7 @@ func (t *TipSetExtractor) getTipSetsByCIDs(ctx context.Context, startCID, stopCI
 	return t.getTipSetsByHeights(ctx, start, stop, filter)
 }
 
-func (t *TipSetExtractor) getTipSetsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error)  {
+func (t *TipSetExtractor) getTipSetsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error) {
 	startBlk, err := t.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
 		return nil, nil, nil, err
@@ -146,7 +146,7 @@ func (t *TipSetExtractor) getTipSetsByHeights(ctx context.Context, start, stop i
 	if start > stop {
 		return nil, fmt.Errorf("start epoch (%d) is above stop epoch (%d)", start, stop)
 	}
-	payloads := make([]types2.Payload, 0, stop - start + 1)
+	payloads := make([]types2.Payload, 0, stop-start+1)
 	for i := start; i <= stop; i++ {
 		ts, err := t.chainStore.GetTipsetByHeight(ctx, abi.ChainEpoch(i), nil, false)
 		if err != nil {
@@ -247,10 +247,10 @@ func (t *TipSetExtractor) getTipSetForTipSet(ctx context.Context, tskCID cid.Cid
 		return nil, nil
 	}
 	return []types2.Payload{{
-		IPLDs:      []ipld.Node{node},
-		For:         types2.HeightOrCID{
+		IPLDs: []ipld.Node{node},
+		For: types2.HeightOrCID{
 			Height: big.NewInt(int64(ts.Height())),
-			CID: &tskCID,
+			CID:    &tskCID,
 		},
 	}}, nil
 }

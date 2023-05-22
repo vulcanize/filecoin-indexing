@@ -4,20 +4,20 @@ var _ Subscription = &subscription{}
 
 func NewSubscription(payload <-chan Payload, err <-chan error, done <-chan struct{}, quit chan<- struct{}) Subscription {
 	return &subscription{
-		id: ""  , // TODO:
+		id:          "", // TODO:
 		payloadChan: payload,
-		errChan:  err,
-		doneChan: done,
-		quitChan: quit,
+		errChan:     err,
+		doneChan:    done,
+		quitChan:    quit,
 	}
 }
 
 type subscription struct {
-	id string
+	id          string
 	payloadChan <-chan Payload
-	errChan <-chan error
-	doneChan <-chan struct{}
-	quitChan chan<- struct{}
+	errChan     <-chan error
+	doneChan    <-chan struct{}
+	quitChan    chan<- struct{}
 }
 
 func (s *subscription) ID() string {

@@ -108,7 +108,7 @@ func (r *ReceiptExtractor) getReceiptsByCIDs(ctx context.Context, startCID, stop
 	return r.getReceiptsByHeights(ctx, start, stop, filter)
 }
 
-func (r *ReceiptExtractor) getReceiptsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error)  {
+func (r *ReceiptExtractor) getReceiptsByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error) {
 	startBlk, err := r.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
 		return nil, nil, nil, err
@@ -147,7 +147,7 @@ func (r *ReceiptExtractor) getReceiptsByHeights(ctx context.Context, start, stop
 	if start > stop {
 		return nil, fmt.Errorf("start epoch (%d) is above stop epoch (%d)", start, stop)
 	}
-	payloads := make([]types2.Payload, 0, start - stop + 1) // TODO:
+	payloads := make([]types2.Payload, 0, start-stop+1) // TODO:
 	for i := start; i <= stop; i++ {
 		ts, err := r.chainStore.GetTipsetByHeight(ctx, abi.ChainEpoch(i), nil, false)
 		if err != nil {
@@ -239,8 +239,8 @@ func (r *ReceiptExtractor) getReceiptsForTipSet(ctx context.Context, tskCID cid.
 		if err != nil {
 			return nil, err
 		}
-		iplds := make([]ipld.Node, 0, len(msgs) + len(sigmsgs))
-		messageCIDs := make([]cid.Cid, 0, len(msgs) + len(sigmsgs))
+		iplds := make([]ipld.Node, 0, len(msgs)+len(sigmsgs))
+		messageCIDs := make([]cid.Cid, 0, len(msgs)+len(sigmsgs))
 		for _, msg := range msgs {
 			msgLookup, err := r.stateStore.StateSearchMsg(ctx, ts.Key(), msg.Cid(), abi.ChainEpoch(-1), true)
 			if err != nil {
@@ -284,12 +284,12 @@ func (r *ReceiptExtractor) getReceiptsForTipSet(ctx context.Context, tskCID cid.
 			messageCIDs = append(messageCIDs, msg.Cid())
 		}
 		payloads = append(payloads, types2.Payload{
-			IPLDs:      iplds,
-			For:        types2.HeightOrCID{
+			IPLDs: iplds,
+			For: types2.HeightOrCID{
 				Height: big.NewInt(int64(ts.Height())),
-				CID: &tskCID,
+				CID:    &tskCID,
 			},
-			ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid" : {tskCID}, "block_cid" : {header.Cid()}, "message_cid" : messageCIDs},
+			ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid": {tskCID}, "block_cid": {header.Cid()}, "message_cid": messageCIDs},
 		})
 	}
 

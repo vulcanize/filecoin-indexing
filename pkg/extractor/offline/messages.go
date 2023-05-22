@@ -107,7 +107,7 @@ func (m *MessageExtractor) getMessagesByCIDs(ctx context.Context, startCID, stop
 	return m.getMessagesByHeights(ctx, start, stop, filter)
 }
 
-func (m *MessageExtractor) getMessagesByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error)  {
+func (m *MessageExtractor) getMessagesByCIDsAsync(ctx context.Context, startCID, stopCID cid.Cid, quit <-chan struct{}, filter types2.Filter) (<-chan types2.Payload, <-chan struct{}, <-chan error, error) {
 	startBlk, err := m.chainStore.ChainBlockstore().Get(ctx, startCID)
 	if err != nil {
 		return nil, nil, nil, err
@@ -146,7 +146,7 @@ func (m *MessageExtractor) getMessagesByHeights(ctx context.Context, start, stop
 	if start > stop {
 		return nil, fmt.Errorf("start epoch (%d) is above stop epoch (%d)", start, stop)
 	}
-	payloads := make([]types2.Payload, 0, start - stop + 1) // TODO:
+	payloads := make([]types2.Payload, 0, start-stop+1) // TODO:
 	for i := start; i <= stop; i++ {
 		ts, err := m.chainStore.GetTipsetByHeight(ctx, abi.ChainEpoch(i), nil, false)
 		if err != nil {
@@ -243,7 +243,7 @@ func (m *MessageExtractor) getMessagesForTipSet(ctx context.Context, tskCID cid.
 		if err != nil {
 			return nil, err
 		}
-		iplds := make([]ipld.Node, 0, len(msgs) + len(sigmsgs))
+		iplds := make([]ipld.Node, 0, len(msgs)+len(sigmsgs))
 		for _, msg := range msgs {
 			na := basicnode.Prototype.Any.NewBuilder()
 			if err := msg.MarshalCBOR(b); err != nil {
@@ -275,12 +275,12 @@ func (m *MessageExtractor) getMessagesForTipSet(ctx context.Context, tskCID cid.
 			iplds = append(iplds, node)
 		}
 		payloads = append(payloads, types2.Payload{
-			IPLDs:      iplds,
-			For:        types2.HeightOrCID{
+			IPLDs: iplds,
+			For: types2.HeightOrCID{
 				Height: big.NewInt(int64(ts.Height())),
-				CID: &tskCID,
+				CID:    &tskCID,
 			},
-			ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid" : {tskCID}, "block_cid" : {header.Cid()}},
+			ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid": {tskCID}, "block_cid": {header.Cid()}},
 		})
 	}
 

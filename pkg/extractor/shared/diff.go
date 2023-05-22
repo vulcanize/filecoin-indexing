@@ -71,19 +71,19 @@ func GetActorStateChanges(ctx context.Context, store adt.Store, current, execute
 			continue
 		}
 		iplds = append(iplds, node)
-		associations = append(associations, map[string]interface{}{"id" : addrStr})
+		associations = append(associations, map[string]interface{}{"id": addrStr})
 	}
 	tskCID, err := executed.Key().Cid()
 	if err != nil {
 		return nil, err
 	}
 	return &types2.Payload{
-		IPLDs:        iplds,
-		For:          types2.HeightOrCID{
+		IPLDs: iplds,
+		For: types2.HeightOrCID{
 			Height: big.NewInt(int64(executed.Height())),
-			CID: &tskCID,
+			CID:    &tskCID,
 		},
-		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key" : {tskCID}, "parent_state_root_cid" : {executed.ParentState()}},
+		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key": {tskCID}, "parent_state_root_cid": {executed.ParentState()}},
 		Associations: associations,
 	}, nil
 }
@@ -109,7 +109,7 @@ func GetGenesisActors(ctx context.Context, store adt.Store, genesis *types.TipSe
 			return nil
 		}
 		iplds = append(iplds, node)
-		associations = append(associations, map[string]interface{}{"id" : addr.String()})
+		associations = append(associations, map[string]interface{}{"id": addr.String()})
 		return nil
 	}); err != nil {
 		return nil, err
@@ -119,12 +119,12 @@ func GetGenesisActors(ctx context.Context, store adt.Store, genesis *types.TipSe
 		return nil, err
 	}
 	return &types2.Payload{
-		IPLDs:        iplds,
-		For:          types2.HeightOrCID{
+		IPLDs: iplds,
+		For: types2.HeightOrCID{
 			Height: big.NewInt(int64(genesis.Height())),
-			CID: &tskCID,
+			CID:    &tskCID,
 		},
-		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key" : {tskCID}, "parent_state_root_cid" : {genesis.ParentState()}},
+		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key": {tskCID}, "parent_state_root_cid": {genesis.ParentState()}},
 		Associations: associations,
 	}, nil
 }
@@ -168,20 +168,20 @@ func fastDiff(ctx context.Context, ts *types.TipSet, store adt.Store, oldTree, n
 			return nil, err
 		}
 		iplds = append(iplds, node)
-		associations = append(associations, map[string]interface{}{"id" : addr.String()})
-		associations = append(associations, map[string]interface{}{"type" : change.Type})
+		associations = append(associations, map[string]interface{}{"id": addr.String()})
+		associations = append(associations, map[string]interface{}{"type": change.Type})
 	}
 	tskCID, err := ts.Key().Cid()
 	if err != nil {
 		return nil, err
 	}
 	return &types2.Payload{
-		IPLDs:        iplds,
-		For:          types2.HeightOrCID{
+		IPLDs: iplds,
+		For: types2.HeightOrCID{
 			Height: big.NewInt(int64(ts.Height())),
-			CID: &tskCID,
+			CID:    &tskCID,
 		},
-		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key" : {tskCID}, "parent_state_root_cid" : {ts.ParentState()}},
+		ParentCIDs:   map[string][]cid.Cid{"parent_tip_set_key": {tskCID}, "parent_state_root_cid": {ts.ParentState()}},
 		Associations: associations,
 	}, nil
 }
