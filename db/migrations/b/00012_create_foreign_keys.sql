@@ -205,13 +205,13 @@ ADD CONSTRAINT actors_height_state_root_cid_tip_sets_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES filecoin.tip_sets (height, parent_state_root_cid);
 
-ALTER TABLE filecoin.actor_states
-ADD CONSTRAINT actor_states_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.actor_state
+ADD CONSTRAINT actor_state_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.actor_states
-ADD CONSTRAINT actor_states_height_state_root_cid_id_actors_fkey
+ALTER TABLE filecoin.actor_state
+ADD CONSTRAINT actor_state_height_state_root_cid_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
@@ -282,8 +282,8 @@ FOREIGN KEY (height, proposals_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.storage_actor_state
-ADD CONSTRAINT storage_height_deal_states_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, deal_states_root_cid)
+ADD CONSTRAINT storage_height_deal_state_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, deal_state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.storage_actor_state
@@ -326,13 +326,13 @@ ADD CONSTRAINT deal_props_height_state_root_cid_storage_actor_id_storage_fkey
 FOREIGN KEY (height, state_root_cid, storage_actor_id)
 REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id);
 
-ALTER TABLE filecoin.storage_actor_deal_states
-ADD CONSTRAINT deal_states_height_state_root_cid_ipld_blocks_fkey
+ALTER TABLE filecoin.storage_actor_deal_state
+ADD CONSTRAINT deal_state_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.storage_actor_deal_states
-ADD CONSTRAINT deal_states_height_state_root_cid_storage_actor_id_storage_fkey
+ALTER TABLE filecoin.storage_actor_deal_state
+ADD CONSTRAINT deal_state_height_state_root_cid_storage_actor_id_storage_fkey
 FOREIGN KEY (height, state_root_cid, storage_actor_id)
 REFERENCES filecoin.storage_actor_state (height, state_root_cid, storage_actor_id);
 
@@ -572,8 +572,8 @@ FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.payment_channel_actor_state
-ADD CONSTRAINT pay_chan_height_lane_states_root_cid_ipld_blocks_fkey
-FOREIGN KEY (height, lane_states_root_cid)
+ADD CONSTRAINT pay_chan_height_lane_state_root_cid_ipld_blocks_fkey
+FOREIGN KEY (height, lane_state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
 ALTER TABLE filecoin.payment_channel_actor_state
@@ -581,12 +581,12 @@ ADD CONSTRAINT pay_chan_height_state_root_cid_pay_chan_actor_id_actors_fkey
 FOREIGN KEY (height, state_root_cid, payment_channel_actor_id)
 REFERENCES filecoin.actors (height, state_root_cid, id);
 
-ALTER TABLE filecoin.payment_channel_lane_states
+ALTER TABLE filecoin.payment_channel_lane_state
 ADD CONSTRAINT pay_lanes_height_state_root_cid_ipld_blocks_fkey
 FOREIGN KEY (height, state_root_cid)
 REFERENCES ipld.blocks (height, key);
 
-ALTER TABLE filecoin.payment_channel_lane_states
+ALTER TABLE filecoin.payment_channel_lane_state
 ADD CONSTRAINT pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey
 FOREIGN KEY (height, state_root_cid, payment_channel_actor_id)
 REFERENCES filecoin.payment_channel_actor_state (height, state_root_cid, payment_channel_actor_id);
@@ -841,17 +841,17 @@ DROP CONSTRAINT power_state_height_cron_event_queue_root_cid_ipld_blocks_fkey;
 ALTER TABLE filecoin.storage_power_actor_state
 DROP CONSTRAINT power_state_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.payment_channel_lane_states
+ALTER TABLE filecoin.payment_channel_lane_state
 DROP CONSTRAINT pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey;
 
-ALTER TABLE filecoin.payment_channel_lane_states
+ALTER TABLE filecoin.payment_channel_lane_state
 DROP CONSTRAINT pay_lanes_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.payment_channel_actor_state
 DROP CONSTRAINT pay_chan_height_state_root_cid_pay_chan_actor_id_actors_fkey;
 
 ALTER TABLE filecoin.payment_channel_actor_state
-DROP CONSTRAINT pay_chan_height_lane_states_root_cid_ipld_blocks_fkey;
+DROP CONSTRAINT pay_chan_height_lane_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.payment_channel_actor_state
 DROP CONSTRAINT pay_chan_height_state_root_cid_ipld_blocks_fkey;
@@ -994,11 +994,11 @@ DROP CONSTRAINT pending_props_height_deal_cid_ipld_blocks_fkey;
 ALTER TABLE filecoin.storage_actor_pending_proposals
 DROP CONSTRAINT pending_props_height_state_root_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.storage_actor_deal_states
-DROP CONSTRAINT deal_states_height_state_root_cid_storage_actor_id_storage_fkey;
+ALTER TABLE filecoin.storage_actor_deal_state
+DROP CONSTRAINT deal_state_height_state_root_cid_storage_actor_id_storage_fkey;
 
-ALTER TABLE filecoin.storage_actor_deal_states
-DROP CONSTRAINT deal_states_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.storage_actor_deal_state
+DROP CONSTRAINT deal_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_actor_deal_proposals
 DROP CONSTRAINT deal_props_height_state_root_cid_storage_actor_id_storage_fkey;
@@ -1025,7 +1025,7 @@ ALTER TABLE filecoin.storage_actor_state
 DROP CONSTRAINT storage_height_pending_proposals_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_actor_state
-DROP CONSTRAINT storage_height_deal_states_root_cid_ipld_blocks_fkey;
+DROP CONSTRAINT storage_height_deal_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.storage_actor_state
 DROP CONSTRAINT storage_height_proposals_root_cid_ipld_blocks_fkey;
@@ -1067,11 +1067,11 @@ DROP CONSTRAINT actor_events_height_message_cid_ipld_blocks_fkey;
 ALTER TABLE filecoin.actor_events
 DROP CONSTRAINT actor_events_height_block_cid_ipld_blocks_fkey;
 
-ALTER TABLE filecoin.actor_states
-DROP CONSTRAINT actor_states_height_state_root_cid_id_actors_fkey;
+ALTER TABLE filecoin.actor_state
+DROP CONSTRAINT actor_state_height_state_root_cid_id_actors_fkey;
 
-ALTER TABLE filecoin.actor_states
-DROP CONSTRAINT actor_states_height_state_root_cid_ipld_blocks_fkey;
+ALTER TABLE filecoin.actor_state
+DROP CONSTRAINT actor_state_height_state_root_cid_ipld_blocks_fkey;
 
 ALTER TABLE filecoin.actors
 DROP CONSTRAINT actors_height_state_root_cid_tip_sets_fkey;

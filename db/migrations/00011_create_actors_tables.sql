@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actors (
 );
 
 -- NOTE: catchall for any actor state not represented with its own rich tables(s)
-CREATE TABLE IF NOT EXISTS filecoin.actor_states (
+CREATE TABLE IF NOT EXISTS filecoin.actor_state (
    height         BIGINT NOT NULL,
    state_root_cid BIGINT NOT NULL,
    id             TEXT NOT NULL,
@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_events (
 
 -- +goose Down
 DROP TABLE filecoin.actor_events;
-DROP TABLE filecoin.actor_states;
+DROP TABLE filecoin.actor_state;
 DROP TABLE filecoin.actors;
