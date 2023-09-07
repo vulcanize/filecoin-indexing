@@ -257,6 +257,6 @@ func (h *HeaderExtractor) getHeadersForTipSet(ctx context.Context, tskCID cid.Ci
 			CID:    &tskCID,
 			Height: big.NewInt(int64(ts.Height())),
 		},
-		ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid": {tskCID}},
+		ParentCIDs: []types2.CIDs{{ID: "parent_tip_set_key_cid", CIDs: []cid.Cid{tskCID}}},
 	}}, nil
 }

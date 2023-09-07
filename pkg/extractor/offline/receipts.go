@@ -289,7 +289,7 @@ func (r *ReceiptExtractor) getReceiptsForTipSet(ctx context.Context, tskCID cid.
 				Height: big.NewInt(int64(ts.Height())),
 				CID:    &tskCID,
 			},
-			ParentCIDs: map[string][]cid.Cid{"parent_tip_set_key_cid": {tskCID}, "block_cid": {header.Cid()}, "message_cid": messageCIDs},
+			ParentCIDs: []types2.CIDs{{ID: "parent_tip_set_key_cid", CIDs: []cid.Cid{tskCID}}, {ID: "message_cid", CIDs: messageCIDs}},
 		})
 	}
 
