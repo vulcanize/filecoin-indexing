@@ -55,7 +55,7 @@ func GetActorStateChanges(ctx context.Context, store adt.Store, current, execute
 	}
 
 	iplds := make([]ipld.Node, 0, len(actors))
-	associations := make([]map[string]interface{}, 0, len(actors))
+	associations := make([][]types2.Association, 0, len(actors))
 
 	for addrStr, act := range actors {
 		na := basicnode.Prototype.Any.NewBuilder()
@@ -71,7 +71,7 @@ func GetActorStateChanges(ctx context.Context, store adt.Store, current, execute
 			continue
 		}
 		iplds = append(iplds, node)
-		associations = append(associations, map[string]interface{}{"id": addrStr})
+		associations = append(associations, []types2.Association{{ID: "id", Val: addrStr}})
 	}
 	tskCID, err := executed.Key().Cid()
 	if err != nil {

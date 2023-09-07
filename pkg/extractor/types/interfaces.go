@@ -2,6 +2,8 @@ package types
 
 import (
 	"context"
+	"github.com/filecoin-project/go-amt-ipld/v4"
+	"github.com/filecoin-project/go-hamt-ipld/v3"
 	"math/big"
 
 	"github.com/filecoin-project/lily/lens"
@@ -10,7 +12,6 @@ import (
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/blockstore"
 	"github.com/filecoin-project/lotus/chain/actors/adt"
-	"github.com/filecoin-project/lotus/chain/store"
 	"github.com/filecoin-project/lotus/chain/types"
 	"github.com/ipfs/go-cid"
 	"github.com/ipld/go-ipld-prime"
@@ -35,10 +36,35 @@ type HistoricalExtractor interface {
 }
 
 type Payload struct {
-	IPLDs        []ipld.Node
+	IPLDs        []TrackedNode
 	For          HeightOrCID
-	ParentCIDs   map[string][]cid.Cid
-	Associations []map[string]interface{}
+	ParentCIDs   []CIDs
+	Associations [][]Association
+}
+
+type TrackedNode struct {
+	Node ipld.Node
+	Position []int
+}
+
+type TrackedHAMTChange struct {
+	Diff *hamt.Change
+	Position []int
+}
+
+type TrackedAMTChange struct {
+	Diff *amt.Change
+	Position []int
+}
+
+type CIDs struct {
+	ID string
+	CIDs []cid.Cid
+}
+
+type Association struct {
+	ID   string
+	Val  string
 }
 
 type Offset struct {
@@ -65,13 +91,12 @@ type HeightOrCID struct {
 	CID    *cid.Cid
 }
 
-var _ ChainAccess = &store.ChainStore{}
-
 type ChainAccess interface {
 	ChainBlockstore() blockstore.Blockstore
-	LoadTipSet(context.Context, types.TipSetKey) (*types.TipSet, error)
-	GetTipsetByHeight(context.Context, abi.ChainEpoch, *types.TipSet, bool) (*types.TipSet, error)
-	MessagesForBlock(context.Context, *types.BlockHeader) ([]*types.Message, []*types.SignedMessage, error)
+	LoadTipSet(ctx context.Context, key types.TipSetKey) (*types.TipSet, error)
+	GetTipsetByHeight(ctx context.Context, epoch abi.ChainEpoch, ts *types.TipSet, prev bool) (*types.TipSet, error)
+	MessagesForBlock(ctx context.Context, block *types.BlockHeader) ([]TrackedNode, []TrackedNode, error)
+	ReceiptsForBlock(ctx context.Context, block *types.BlockHeader) ([]TrackedNode, error)
 }
 
 type StreamableChainAccess interface {
@@ -86,7 +111,7 @@ type StateAccess interface {
 
 type StreamableStateAccess interface {
 	StateAccess
-	HAMTStream(context.Context) (<-chan adt.AdtMapDiff, error)
-	AMTStream(context.Context) (<-chan adt.AdtArrayDiff, error)
+	HAMTStream(context.Context) (<-chan []TrackedHAMTChange, error)
+	AMTStream(context.Context) (<-chan []TrackedAMTChange, error)
 	lens.StateAPI
 }
