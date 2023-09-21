@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS filecoin.actor_events (
     height 			BIGINT 	NOT NULL,
     block_cid       BIGINT 	NOT NULL,
     message_cid 	BIGINT	NOT NULL,
-    event_index 	BIGINT 	NOT NULL,
+    event_index 	INT 	NOT NULL,
     emitter 		TEXT	NOT NULL,
     flags 			BYTEA	NOT NULL,
     codec			BIGINT 	NOT NULL,
