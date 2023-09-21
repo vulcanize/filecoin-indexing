@@ -17,7 +17,7 @@ const (
 	Dbytea
 	Dvarchar
 	Dtext
-	// TODO: add missing types
+	Djsonb
 )
 
 type ConflictClause struct {
@@ -139,6 +139,8 @@ func (typ colType) formatter() colfmt {
 	case Dvarchar:
 		return sprintf("%s")
 	case Dtext:
+		return sprintf("%s")
+	case Djsonb:
 		return sprintf("%s")
 	}
 	panic("unreachable")
