@@ -16,6 +16,7 @@ services:
       DATABASE_PASSWORD: "password"
       DATABASE_HOSTNAME: "ipld-fil-db"
       DATABASE_PORT: 5432
+      RUN_HYPERTABLE_MIGRATIONS: "true"
 
   ipld-fil-db:
     image: postgres:14.7

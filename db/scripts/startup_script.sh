@@ -10,6 +10,11 @@ echo "Connecting with: $FIL_PG_CONNECT"
 echo "Running database migrations"
 ./goose -dir migrations postgres "$FIL_PG_CONNECT" up
 
+if [ "$RUN_HYPERTABLE_MIGRATIONS" == "true" ]; then
+    echo "Running hypertable migrations"
+    ./goose -dir migrations/hypertable postgres "$FIL_PG_CONNECT" up
+fi
+
 # If the db migrations ran without err
 if [[ $? -eq 0 ]]; then
     echo "Migration process ran successfully"

@@ -707,7 +707,7 @@ func (m MinerActorStateModel) Schema() string {
 }
 
 func (m MinerActorStateModel) TableName() string {
-	return "miner_actor_states"
+	return "miner_actor_state"
 }
 
 func (m MinerActorStateModel) Values() []interface{} {
@@ -959,7 +959,7 @@ func (m MultisigActorStateRecord) Schema() string {
 }
 
 func (m MultisigActorStateRecord) TableName() string {
-	return "multisig_actor_states"
+	return "multisig_actor_state"
 }
 
 func (m MultisigActorStateRecord) Values() []interface{} {

@@ -17,5 +17,6 @@ COPY --from=builder /go/src/github.com/vulcanize/filecoin-indexing/db/scripts/st
 
 COPY --from=builder /goose goose
 COPY --from=builder /go/src/github.com/vulcanize/filecoin-indexing/db/migrations migrations
+COPY --from=builder /go/src/github.com/vulcanize/filecoin-indexing/db/migrations/hypertable migrations/hypertable
 
 ENTRYPOINT ["/app/startup_script.sh"]

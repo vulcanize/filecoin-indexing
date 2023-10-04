@@ -68,7 +68,7 @@ CREATE TABLE filecoin.actor_events (
     height bigint NOT NULL,
     block_cid bigint NOT NULL,
     message_cid bigint NOT NULL,
-    event_index bigint NOT NULL,
+    event_index integer NOT NULL,
     emitter text NOT NULL,
     flags bytea NOT NULL,
     codec bigint NOT NULL,
@@ -78,10 +78,10 @@ CREATE TABLE filecoin.actor_events (
 
 
 --
--- Name: actor_states; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: actor_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.actor_states (
+CREATE TABLE filecoin.actor_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     id text NOT NULL,
@@ -200,8 +200,8 @@ CREATE TABLE filecoin.drand_block_entries (
     height bigint NOT NULL,
     block_cid bigint NOT NULL,
     round bigint NOT NULL,
-    signature text NOT NULL,
-    previous_signature text NOT NULL
+    signature bytea NOT NULL,
+    previous_signature bytea NOT NULL
 );
 
 
@@ -546,15 +546,15 @@ CREATE TABLE filecoin.payment_channel_actor_state (
     to_send numeric NOT NULL,
     settling_at_epoch bigint NOT NULL,
     min_settle_height bigint NOT NULL,
-    lane_states_root_cid bigint NOT NULL
+    lane_state_root_cid bigint NOT NULL
 );
 
 
 --
--- Name: payment_channel_lane_states; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: payment_channel_lane_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.payment_channel_lane_states (
+CREATE TABLE filecoin.payment_channel_lane_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     payment_channel_actor_id text NOT NULL,
@@ -573,7 +573,7 @@ CREATE TABLE filecoin.receipts (
     height bigint NOT NULL,
     block_cid bigint NOT NULL,
     message_cid bigint NOT NULL,
-    idx bigint NOT NULL,
+    index integer NOT NULL,
     exit_code bigint NOT NULL,
     gas_used bigint NOT NULL,
     return bytea,
@@ -657,10 +657,10 @@ CREATE TABLE filecoin.storage_actor_deal_proposals (
 
 
 --
--- Name: storage_actor_deal_states; Type: TABLE; Schema: filecoin; Owner: -
+-- Name: storage_actor_deal_state; Type: TABLE; Schema: filecoin; Owner: -
 --
 
-CREATE TABLE filecoin.storage_actor_deal_states (
+CREATE TABLE filecoin.storage_actor_deal_state (
     height bigint NOT NULL,
     state_root_cid bigint NOT NULL,
     storage_actor_id text NOT NULL,
@@ -734,7 +734,7 @@ CREATE TABLE filecoin.storage_actor_state (
     state_root_cid bigint NOT NULL,
     storage_actor_id text NOT NULL,
     proposals_root_cid bigint NOT NULL,
-    deal_states_root_cid bigint NOT NULL,
+    deal_state_root_cid bigint NOT NULL,
     pending_proposals_root_cid bigint NOT NULL,
     escrows_root_cid bigint NOT NULL,
     locked_tokens_root_cid bigint NOT NULL,
@@ -1019,11 +1019,11 @@ ALTER TABLE ONLY filecoin.actor_events
 
 
 --
--- Name: actor_states actor_states_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: actor_state actor_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.actor_states
-    ADD CONSTRAINT actor_states_pkey PRIMARY KEY (height, state_root_cid, id);
+ALTER TABLE ONLY filecoin.actor_state
+    ADD CONSTRAINT actor_state_pkey PRIMARY KEY (height, state_root_cid, id);
 
 
 --
@@ -1227,11 +1227,11 @@ ALTER TABLE ONLY filecoin.payment_channel_actor_state
 
 
 --
--- Name: payment_channel_lane_states payment_channel_lane_states_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: payment_channel_lane_state payment_channel_lane_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.payment_channel_lane_states
-    ADD CONSTRAINT payment_channel_lane_states_pkey PRIMARY KEY (height, state_root_cid, payment_channel_actor_id, lane_id);
+ALTER TABLE ONLY filecoin.payment_channel_lane_state
+    ADD CONSTRAINT payment_channel_lane_state_pkey PRIMARY KEY (height, state_root_cid, payment_channel_actor_id, lane_id);
 
 
 --
@@ -1275,11 +1275,11 @@ ALTER TABLE ONLY filecoin.storage_actor_deal_proposals
 
 
 --
--- Name: storage_actor_deal_states storage_actor_deal_states_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_actor_deal_state storage_actor_deal_state_pkey; Type: CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_actor_deal_states
-    ADD CONSTRAINT storage_actor_deal_states_pkey PRIMARY KEY (height, state_root_cid, storage_actor_id, deal_id);
+ALTER TABLE ONLY filecoin.storage_actor_deal_state
+    ADD CONSTRAINT storage_actor_deal_state_pkey PRIMARY KEY (height, state_root_cid, storage_actor_id, deal_id);
 
 
 --
@@ -1467,19 +1467,19 @@ ALTER TABLE ONLY filecoin.actor_events
 
 
 --
--- Name: actor_states actor_states_height_state_root_cid_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: actor_state actor_state_height_state_root_cid_id_actors_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.actor_states
-    ADD CONSTRAINT actor_states_height_state_root_cid_id_actors_fkey FOREIGN KEY (height, state_root_cid, id) REFERENCES filecoin.actors(height, state_root_cid, id);
+ALTER TABLE ONLY filecoin.actor_state
+    ADD CONSTRAINT actor_state_height_state_root_cid_id_actors_fkey FOREIGN KEY (height, state_root_cid, id) REFERENCES filecoin.actors(height, state_root_cid, id);
 
 
 --
--- Name: actor_states actor_states_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: actor_state actor_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.actor_states
-    ADD CONSTRAINT actor_states_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.actor_state
+    ADD CONSTRAINT actor_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
@@ -1627,19 +1627,19 @@ ALTER TABLE ONLY filecoin.storage_actor_deal_proposals
 
 
 --
--- Name: storage_actor_deal_states deal_states_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_actor_deal_state deal_state_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_actor_deal_states
-    ADD CONSTRAINT deal_states_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
+ALTER TABLE ONLY filecoin.storage_actor_deal_state
+    ADD CONSTRAINT deal_state_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: storage_actor_deal_states deal_states_height_state_root_cid_storage_actor_id_storage_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_actor_deal_state deal_state_height_state_root_cid_storage_actor_id_storage_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.storage_actor_deal_states
-    ADD CONSTRAINT deal_states_height_state_root_cid_storage_actor_id_storage_fkey FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state(height, state_root_cid, storage_actor_id);
+ALTER TABLE ONLY filecoin.storage_actor_deal_state
+    ADD CONSTRAINT deal_state_height_state_root_cid_storage_actor_id_storage_fkey FOREIGN KEY (height, state_root_cid, storage_actor_id) REFERENCES filecoin.storage_actor_state(height, state_root_cid, storage_actor_id);
 
 
 --
@@ -2179,11 +2179,11 @@ ALTER TABLE ONLY filecoin.parsed_messages
 
 
 --
--- Name: payment_channel_actor_state pay_chan_height_lane_states_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: payment_channel_actor_state pay_chan_height_lane_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.payment_channel_actor_state
-    ADD CONSTRAINT pay_chan_height_lane_states_root_cid_ipld_blocks_fkey FOREIGN KEY (height, lane_states_root_cid) REFERENCES ipld.blocks(height, key);
+    ADD CONSTRAINT pay_chan_height_lane_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, lane_state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
@@ -2203,18 +2203,18 @@ ALTER TABLE ONLY filecoin.payment_channel_actor_state
 
 
 --
--- Name: payment_channel_lane_states pay_lanes_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: payment_channel_lane_state pay_lanes_height_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.payment_channel_lane_states
+ALTER TABLE ONLY filecoin.payment_channel_lane_state
     ADD CONSTRAINT pay_lanes_height_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
--- Name: payment_channel_lane_states pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: payment_channel_lane_state pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
-ALTER TABLE ONLY filecoin.payment_channel_lane_states
+ALTER TABLE ONLY filecoin.payment_channel_lane_state
     ADD CONSTRAINT pay_lanes_height_state_root_cid_pay_chan_actor_id_pay_chan_fkey FOREIGN KEY (height, state_root_cid, payment_channel_actor_id) REFERENCES filecoin.payment_channel_actor_state(height, state_root_cid, payment_channel_actor_id);
 
 
@@ -2443,11 +2443,11 @@ ALTER TABLE ONLY filecoin.storage_actor_state
 
 
 --
--- Name: storage_actor_state storage_height_deal_states_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
+-- Name: storage_actor_state storage_height_deal_state_root_cid_ipld_blocks_fkey; Type: FK CONSTRAINT; Schema: filecoin; Owner: -
 --
 
 ALTER TABLE ONLY filecoin.storage_actor_state
-    ADD CONSTRAINT storage_height_deal_states_root_cid_ipld_blocks_fkey FOREIGN KEY (height, deal_states_root_cid) REFERENCES ipld.blocks(height, key);
+    ADD CONSTRAINT storage_height_deal_state_root_cid_ipld_blocks_fkey FOREIGN KEY (height, deal_state_root_cid) REFERENCES ipld.blocks(height, key);
 
 
 --
