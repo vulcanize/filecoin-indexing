@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS filecoin.messages (
     gas_premium NUMERIC NOT NULL,
     gas_limit   BIGINT NOT NULL,
     method      BIGINT,
+    index       INT NOT NULL,
     selector_suffix INT[] NOT NULL,
     PRIMARY KEY (height, block_cid, message_cid)
 );

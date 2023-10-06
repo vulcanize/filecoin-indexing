@@ -54,10 +54,10 @@ secondary caches/layers/watcher can derive missing information from the core dat
 - [x] Dockerfile and compose files
 - [x] Sanity checking scripts
 - [ ] Github actions
-- [ ] UML
+- [x] UML
 
 ## Create and apply indexes
 - [ ] Indexes
 
 ## Create migration(s) for hypertable conversions
-- [ ] Hypertable conversions
+- [x] Hypertable conversions
