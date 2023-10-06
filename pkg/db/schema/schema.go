@@ -34,14 +34,14 @@ var TableTipSets = Table{
 
 var TableTipSetMembers = Table{
 	Schema: "filecoin",
-	Name:   "tip_set_members",
+	Name:   "parent_tip_sets",
 	Columns: []Column{
 		{Name: "height", Type: Dbigint},
 		{Name: "parent_tip_set_key_cid", Type: Dbigint},
-		{Name: "index", Type: Dinteger},
-		{Name: "block_cid", Type: Dbigint},
+		{Name: "parent_height", Type: Dbigint},
+		{Name: "parent_parent_tip_set_key_cid", Type: Dbigint},
 	},
-	UpsertClause: OnConflict("height", "parent_tip_set_key_cid", "index"),
+	UpsertClause: OnConflict("height", "parent_tip_set_key_cid"), // TODO: handle multiple upsert clauses
 }
 
 var TableBlockHeaders = Table{
@@ -62,30 +62,9 @@ var TableBlockHeaders = Table{
 		{Name: "win_count", Type: Dbigint},
 		{Name: "parent_base_fee", Type: Dtext},
 		{Name: "fork_signaling", Type: Dbigint},
+		{Name: "index", Type: Dinteger},
 	},
 	UpsertClause: OnConflict("height", "block_cid"),
-}
-
-var TableBlockParents = Table{
-	Schema: "filecoin",
-	Name:   "block_parents",
-	Columns: []Column{
-		{Name: "height", Type: Dbigint},
-		{Name: "block_cid", Type: Dbigint},
-		{Name: "parent_cid", Type: Dbigint},
-	},
-	UpsertClause: OnConflict("height", "block_cid", "parent_cid"),
-}
-
-var TableBlockMessages = Table{
-	Schema: "filecoin",
-	Name:   "block_messages",
-	Columns: []Column{
-		{Name: "height", Type: Dbigint},
-		{Name: "block_cid", Type: Dbigint},
-		{Name: "message_cid", Type: Dbigint},
-	},
-	UpsertClause: OnConflict("height", "block_cid", "message_cid"),
 }
 
 var TableMessages = Table{
@@ -104,6 +83,7 @@ var TableMessages = Table{
 		{Name: "gas_premium", Type: Dnumeric},
 		{Name: "gas_limit", Type: Dbigint},
 		{Name: "method", Type: Dbigint},
+		{Name: "index", Type: Dinteger},
 		{Name: "selector_suffix", Type: Dinteger, Array: true},
 	},
 	UpsertClause: OnConflict("height", "block_cid", "message_cid"),
