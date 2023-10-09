@@ -1,10 +1,8 @@
 -- +goose Up
 SELECT create_hypertable('ipld.blocks', 'height', migrate_data => true, chunk_time_interval => 2880);
 SELECT create_hypertable('filecoin.tip_sets', 'height', migrate_data => true, chunk_time_interval => 100800);
-SELECT create_hypertable('filecoin.tip_set_members', 'height', migrate_data => true, chunk_time_interval => 20160);
+SELECT create_hypertable('filecoin.parent_tip_sets', 'height', migrate_data => true, chunk_time_interval => 100800);
 SELECT create_hypertable('filecoin.block_headers', 'height', migrate_data => true, chunk_time_interval => 20160);
-SELECT create_hypertable('filecoin.block_parents', 'height', migrate_data => true, chunk_time_interval => 20160);
-SELECT create_hypertable('filecoin.block_messages', 'height', migrate_data => true, chunk_time_interval => 32768);
 SELECT create_hypertable('filecoin.messages', 'height', migrate_data => true, chunk_time_interval => 2880);
 SELECT create_hypertable('filecoin.parsed_messages', 'height', migrate_data => true, chunk_time_interval => 2880);
 SELECT create_hypertable('filecoin.internal_messages', 'height', migrate_data => true, chunk_time_interval => 2880);
@@ -52,21 +50,19 @@ SELECT create_hypertable('filecoin.fevm_actor_state', 'height', migrate_data => 
 SELECT create_hypertable('filecoin.fevm_actor_storage', 'height', migrate_data => true, chunk_time_interval => 2880);
 
 -- update version
-INSERT INTO public.db_version (singleton, version) VALUES (true, 'v0.0.0-h')
-ON CONFLICT (singleton) DO UPDATE SET (version, tstamp) = ('v0.0.0-h', NOW());
+INSERT INTO public.db_version (singleton, version) VALUES (true, 'v0.0.1-h')
+ON CONFLICT (singleton) DO UPDATE SET (version, tstamp) = ('v0.0.1-h', NOW());
 
 -- +goose Down
-INSERT INTO public.db_version (singleton, version) VALUES (true, 'v0.0.0')
-ON CONFLICT (singleton) DO UPDATE SET (version, tstamp) = ('v0.0.0', NOW());
+INSERT INTO public.db_version (singleton, version) VALUES (true, 'v0.0.1')
+ON CONFLICT (singleton) DO UPDATE SET (version, tstamp) = ('v0.0.1', NOW());
 
 -- reversing conversion to hypertable requires migrating all data from every chunk back to a single table
 -- create new regular tables
 CREATE TABLE ipld.blocks_i (LIKE ipld.blocks INCLUDING ALL);
 CREATE TABLE filecoin.tip_sets_i (LIKE filecoin.tip_sets INCLUDING ALL);
-CREATE TABLE filecoin.tip_set_members_i (LIKE filecoin.tip_set_members INCLUDING ALL);
+CREATE TABLE filecoin.parent_tip_sets_i (LIKE filecoin.parent_tip_sets INCLUDING ALL);
 CREATE TABLE filecoin.block_headers_i (LIKE filecoin.block_headers INCLUDING ALL);
-CREATE TABLE filecoin.block_parents_i (LIKE filecoin.block_parents INCLUDING ALL);
-CREATE TABLE filecoin.block_messages_i (LIKE filecoin.block_messages INCLUDING ALL);
 CREATE TABLE filecoin.messages_i (LIKE filecoin.messages INCLUDING ALL);
 CREATE TABLE filecoin.parsed_messages_i (LIKE filecoin.parsed_messages INCLUDING ALL);
 CREATE TABLE filecoin.internal_messages_i (LIKE filecoin.internal_messages INCLUDING ALL);
@@ -116,10 +112,8 @@ CREATE TABLE filecoin.fevm_actor_storage_i (LIKE filecoin.fevm_actor_storage INC
 -- migrate data
 INSERT INTO ipld.blocks_i (SELECT * FROM ipld.blocks);
 INSERT INTO filecoin.tip_sets_i (SELECT * FROM filecoin.tip_sets);
-INSERT INTO filecoin.tip_set_members_i (SELECT * FROM filecoin.tip_set_members);
+INSERT INTO filecoin.parent_tip_sets_i (SELECT * FROM filecoin.parent_tip_sets);
 INSERT INTO filecoin.block_headers_i (SELECT * FROM filecoin.block_headers);
-INSERT INTO filecoin.block_parents_i (SELECT * FROM filecoin.block_parents);
-INSERT INTO filecoin.block_messages_i (SELECT * FROM filecoin.block_messages);
 INSERT INTO filecoin.messages_i (SELECT * FROM filecoin.messages);
 INSERT INTO filecoin.parsed_messages_i (SELECT * FROM filecoin.parsed_messages);
 INSERT INTO filecoin.internal_messages_i (SELECT * FROM filecoin.internal_messages);
@@ -169,10 +163,8 @@ INSERT INTO filecoin.fevm_actor_storage_i (SELECT * FROM filecoin.fevm_actor_sto
 -- drop hypertables
 DROP TABLE  ipld.blocks;
 DROP TABLE  filecoin.tip_sets;
-DROP TABLE  filecoin.tip_set_members;
+DROP TABLE  filecoin.parent_tip_sets;
 DROP TABLE  filecoin.block_headers;
-DROP TABLE  filecoin.block_parents;
-DROP TABLE  filecoin.block_messages;
 DROP TABLE  filecoin.messages;
 DROP TABLE  filecoin.parsed_messages;
 DROP TABLE  filecoin.internal_messages;
@@ -222,10 +214,8 @@ DROP TABLE  filecoin.fevm_actor_storage;
 -- rename new tables
 ALTER TABLE ipld.blocks_i RENAME TO blocks;
 ALTER TABLE filecoin.tip_sets_i RENAME TO tip_sets;
-ALTER TABLE filecoin.tip_set_members_i RENAME TO tip_set_members;
+ALTER TABLE filecoin.parent_tip_sets_i RENAME TO parent_tip_sets;
 ALTER TABLE filecoin.block_headers_i RENAME TO block_headers;
-ALTER TABLE filecoin.block_parents_i RENAME TO block_parents;
-ALTER TABLE filecoin.block_messages_i RENAME TO block_messages;
 ALTER TABLE filecoin.messages_i RENAME TO messages;
 ALTER TABLE filecoin.parsed_messages_i RENAME TO parsed_messages;
 ALTER TABLE filecoin.internal_messages_i RENAME TO internal_messages;

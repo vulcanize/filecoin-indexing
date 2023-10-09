@@ -1,10 +1,10 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS filecoin.actors (
     height          BIGINT NOT NULL,
-    state_root_cid  BIGINT NOT NULL,
+    state_root_cid  BIGINT NOT NULL, -- global state root
     id              TEXT NOT NULL,
     code            TEXT NOT NULL,
-    head_cid        BIGINT NOT NULL,
+    head_cid        BIGINT NOT NULL, -- points to the root of this actor's state
     nonce           BIGINT NOT NULL,
     balance         TEXT NOT NULL,
     selector_suffix INT[] NOT NULL,

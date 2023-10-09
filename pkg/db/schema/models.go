@@ -66,23 +66,23 @@ func (m TipSetModel) Values() []interface{} {
 	return []interface{}{m.Height, m.ParentTipSetKey, m.ParentStateRootCID}
 }
 
-type TipSetMember struct {
-	Height          string `db:"height"`
-	ParentTipSetKey string `db:"parent_tip_set_key"`
-	Index           string `db:"index"`
-	BlockCID        string `db:"block_cid"`
+type ParentTipSets struct {
+	Height                string `db:"height"`
+	ParentTipSetKey       string `db:"parent_tip_set_key"`
+	ParentHeight          string `db:"parent_height"`
+	ParentParentTipSetKey string `db:"parent_parent_tip_set_key"`
 }
 
-func (m TipSetMember) Schema() string {
+func (p ParentTipSets) Schema() string {
 	return "filecoin"
 }
 
-func (m TipSetMember) TableName() string {
-	return "tip_set_members"
+func (p ParentTipSets) TableName() string {
+	return "parent_tip_sets"
 }
 
-func (m TipSetMember) Values() []interface{} {
-	return []interface{}{m.Height, m.ParentTipSetKey, m.Index, m.BlockCID}
+func (p ParentTipSets) Values() []interface{} {
+	return []interface{}{p.Height, p.ParentTipSetKey, p.ParentHeight, p.ParentParentTipSetKey}
 }
 
 type BlockHeaderModel struct {
@@ -100,6 +100,7 @@ type BlockHeaderModel struct {
 	WinCount                     string `db:"win_count"`
 	ParentBaseFee                string `db:"parent_base_fee"`
 	ForkSignaling                string `db:"fork_signaling"`
+	Index                        int    `db:"index"`
 }
 
 func (m BlockHeaderModel) Schema() string {
@@ -113,43 +114,7 @@ func (m BlockHeaderModel) TableName() string {
 func (m BlockHeaderModel) Values() []interface{} {
 	return []interface{}{m.Height, m.BlockCID, m.ParentWeight, m.ParentStateRootCID, m.ParentTipSetKeyCID,
 		m.ParentMessageReceiptsRootCID, m.MessagesRootCID, m.BLSAggregate, m.Miner, m.BlockSig,
-		m.Timestamp, m.WinCount, m.ParentBaseFee, m.ForkSignaling}
-}
-
-type BlockParentModel struct {
-	Height    string `db:"height"`
-	BlockCID  string `db:"block_cid"`
-	ParentCID string `db:"parent_cid"`
-}
-
-func (m BlockParentModel) Schema() string {
-	return "filecoin"
-}
-
-func (m BlockParentModel) TableName() string {
-	return "block_parents"
-}
-
-func (m BlockParentModel) Values() []interface{} {
-	return []interface{}{m.Height, m.BlockCID, m.ParentCID}
-}
-
-type BlockMessageModel struct {
-	Height     string `db:"height"`
-	BlockCID   string `db:"block_cid"`
-	MessageCID string `db:"message_cid"`
-}
-
-func (m BlockMessageModel) Schema() string {
-	return "filecoin"
-}
-
-func (m BlockMessageModel) TableName() string {
-	return "block_messages"
-}
-
-func (m BlockMessageModel) Values() []interface{} {
-	return []interface{}{m.Height, m.BlockCID, m.MessageCID}
+		m.Timestamp, m.WinCount, m.ParentBaseFee, m.ForkSignaling, m.Index}
 }
 
 type MessageModel struct {
@@ -165,6 +130,7 @@ type MessageModel struct {
 	GasPremium     string        `db:"gas_premium"`
 	GasLimit       string        `db:"gas_limit"`
 	Method         string        `db:"method"`
+	Index          int           `db:"index"`
 	SelectorSuffix pq.Int32Array `db:"selector_suffix"`
 }
 
@@ -178,7 +144,7 @@ func (m MessageModel) TableName() string {
 
 func (m MessageModel) Values() []interface{} {
 	return []interface{}{m.Height, m.BlockCID, m.MessageCID, m.From, m.To, m.SizeBytes, m.Nonce, m.Value,
-		m.GasFeeCap, m.GasPremium, m.GasLimit, m.Method, m.SelectorSuffix}
+		m.GasFeeCap, m.GasPremium, m.GasLimit, m.Method, m.Index, m.SelectorSuffix}
 }
 
 type ParsedMessageModel struct {
